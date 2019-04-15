@@ -5,16 +5,15 @@ package lc.alg.entity;
 
 import java.io.Serializable;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  * @author 李畅
- *
+ * 该类映射至mongodb 中的users集合
  */
-public class User implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+@Document(collection="users")
+public class User{
+	
 	private String name;
 	private String passwd;
 	public User(String name, String passwd) {

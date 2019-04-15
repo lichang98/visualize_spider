@@ -2,27 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<script
-  src="https://code.jquery.com/jquery-3.4.0.min.js"
-  integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg="
-  crossorigin="anonymous"></script>
-<script
-  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-  crossorigin="anonymous"></script>
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
- rel="stylesheet" 
- integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
- crossorigin="anonymous">
- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
- integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-  crossorigin="anonymous"></script>
- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" 
- integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" 
- crossorigin="anonymous"></script>
-<title>Insert title here</title>
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<!-- jQuery文件 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<title>食品安全新闻数据分析</title>
 </head>
 <body>
-	
+
+	<div class="page-header text-center">
+		<h1>基于主题爬虫的食品安全新闻分析系统
+			<br>
+			<small>
+				基于scrapy框架，对食品安全相关的新闻进行分词、文本分类、实体标注等操作，
+				分析近期主要食品安全事件、涉及机构、人员等信息
+			</small>
+		</h1>
+	</div>
+	<!-- 用户登录表单 -->
+	<form class="form-horizontal" id="userlogin-form" rol="form" th:action="@{/login}" th:object="${user}" method="post">
+		<div th:class="${response == 'fail'} ? 'form-group has-error':'form-group'">
+			<label for="name" class="col-sm-2 col-sm-offset-1 control-label">用户名</label>
+			<div class="col-sm-6">
+				<input type="text" th:field="*{name}" class="form-control" id="name" placeholder="请输入用户名">
+			</div>
+		</div>
+		<div th:class="${response == 'fail'} ? 'form-group has-error':'form-group'">
+			<label for="passwd" class="col-sm-2 col-sm-offset-1 control-label">密码</label>
+			<div class="col-sm-6">
+				<input type="password" th:field="*{passwd}" class="form-control" id="passwd" placeholder="请输入登录密码">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-6 col-sm-offset-3 text-center">
+				<button type="submit" id="submit-btn" class="btn btn-primary btn-block">登录</button>
+			</div>
+		</div>
+	</form>
+	<footer class="footer navbar-fixed-bottom">
+		<div class="container text-center">
+			All right reserved L.C.
+		</div>
+	</footer>
 </body>
 </html>
