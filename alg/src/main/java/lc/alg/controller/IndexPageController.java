@@ -7,17 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import lc.alg.entity.User;
+import lc.alg.entity.UserInfoForm;
 
 
 /**
@@ -26,9 +22,6 @@ import lc.alg.entity.User;
  */
 @Controller
 public class IndexPageController {
-	
-	@Autowired
-	private UserRepository userRepository;
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -58,9 +51,22 @@ public class IndexPageController {
 			return "index";
 		}else {
 			System.out.println("用户信息数据库验证成功!!");
-			return "main";
+			model.addAttribute("response",new UserInfoForm(true,true,true,true,true,true,true));
+			System.out.println("model : " + model.toString());
+			return "user";
 		}
 	}
+	
+	/***
+	 * 转向用户信息管理界面
+	 */
+	@RequestMapping(value="/user")
+	public String userInfoControl(@ModelAttribute User user,@ModelAttribute UserInfoForm userInfoForm,Model model) {
+		System.out.println("转向用户信息管理界面....");
+		return "user";
+	}
+	
+	
 //	/**
 //	 * 用户点击登录后的请求地址
 //	 */

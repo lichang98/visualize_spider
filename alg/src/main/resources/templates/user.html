@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<!-- jQuery文件 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<title>用户信息管理界面</title>
+</head>
+<body>
+	<div th:include="header :: headpanel"></div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h5 class="text-primary">用户信息管理界面</h5>
+		</div>
+	</div>
+	<div class="alert alert-success" th:if="${userform_check == 'yes'}">
+		<a href="#" class="close" data-dismiss="alert">&times;</a>
+		<strong>提交成功!&nbsp;&nbsp;</strong>用户信息修改成功
+	</div>
+	<!-- 用户信息管理表单 -->
+	<form class="form-horizontal" role="form" th:action="@{/user/info_post}" th:object="${user}" th:method="post">
+		<div th:class="${response.nameValid == true} ? 'form-group':'form-group has-error'">
+			<label for="name" class="col-sm-2 control-label">姓名</label>
+			<div class="col-sm-6">
+				<input type="text" th:field="*{name}" th:value="*{name}" class="form-control" id="name" placeholder="请输入姓名">
+			</div>
+		</div>
+		<div th:class="${response.passwdValid == true && response.passwdSame == true} ? 'form-group':'form-group has-error'">
+			<label for="passwd" class="col-sm-2 control-label">密码</label>
+			<div class="col-sm-6">
+				<input type="password" th:field="*{passwd}" class="form-control" id="passwd" placeholder="请输入密码 数字或英文字母  至少6位">
+			</div>
+		</div>
+		<div th:class="${response.passwdValid == true && response.passwdSame == true} ? 'form-group':'form-group has-error'">
+			<label for="passwd_confirm" class="col-sm-2 control-label">确认密码</label>
+			<div class="col-sm-6">
+				<input type="password" th:field="*{passwdConfirm}" class="form-control" id="passwd_confirm" placeholder="再次输入密码">
+			</div>
+		</div>
+		<div th:class="${response.emailValid == true} ? 'form-group':'form-group has-error'">
+			<label for="email" class="col-sm-2 control-label">电子邮件</label>
+			<div class="col-sm-6">
+				<input type="text" th:field="*{email}" class="form-control" id="email" placeholder="请输入电子邮件地址">
+			</div>			
+		</div>
+		<div th:class="${response.telephoneValid == true} ? 'form-group':'form-group has-error'">
+			<label for="telephone" class="col-sm-2 control-label">电话号码</label>
+			<div class="col-sm-6">
+				<input type="text" th:field="*{telephone}" class="form-control" id="telephone" placeholder="请输入电话号码">
+			</div>
+		</div>
+		<div th:class="${response.qqValid == true} ? 'form-group':'form-group has-error'">
+			<label for="qq" class="col-sm-2 control-label">QQ号码</label>
+			<div class="col-sm-6">
+				<input type="text" th:field="*{qq}" class="form-control" id="qq" placeholder="QQ号码">
+			</div>
+		</div>
+		<div th:class="${response.descriptionValid == true} ? 'form-group':'form-group has-error'">
+			<label for="description" class="col-sm-2 control-label">个人简介</label>
+			<div class="col-sm-6">
+				<textarea rows="5" th:field="*{description}" class="form-control"></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-6 col-sm-offset-2 text-center">
+				<button type="submit" id="submit-btn" class="btn btn-primary btn-block">提交</button>
+			</div>
+		</div>
+	</form>
+</body>
+</html>

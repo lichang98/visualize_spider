@@ -3,8 +3,6 @@
  */
 package lc.alg.entity;
 
-import java.io.Serializable;
-
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -16,14 +14,25 @@ public class User{
 	
 	private String name;
 	private String passwd;
-	public User(String name, String passwd) {
-		super();
-		this.name = name;
-		this.passwd = passwd;
-	}
+	private String passwdConfirm;
+	private String email;
+	private String telephone;
+	private String qq;
+	private String description;
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	public User(String name, String passwd, String passwdConfirm, String email, String telephone, String qq,
+			String description) {
+		super();
+		this.name = name;
+		this.passwd = passwd;
+		this.passwdConfirm = passwdConfirm;
+		this.email = email;
+		this.telephone = telephone;
+		this.qq = qq;
+		this.description = description;
 	}
 	public String getName() {
 		return name;
@@ -37,10 +46,42 @@ public class User{
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
 	}
+	public String getPasswdConfirm() {
+		return passwdConfirm;
+	}
+	public void setPasswdConfirm(String passwdConfirm) {
+		this.passwdConfirm = passwdConfirm;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getTelephone() {
+		return telephone;
+	}
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+	public String getQq() {
+		return qq;
+	}
+	public void setQq(String qq) {
+		this.qq = qq;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", passwd=" + passwd + "]";
+		return "User [name=" + name + ", passwd=" + passwd + ", passwdConfirm=" + passwdConfirm + ", email=" + email
+				+ ", telephone=" + telephone + ", qq=" + qq + ", description=" + description + "]";
 	}
+	
 	
 	
 }
