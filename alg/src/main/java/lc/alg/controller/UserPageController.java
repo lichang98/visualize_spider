@@ -28,9 +28,17 @@ public class UserPageController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
+	/**
+	 * 
+	 * @param user 当前表单的用户信息
+	 * @param userPre 修改前的用户信息
+	 * @param userInfoForm
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("/user/info_post")
 	public String userInfoChange(@ModelAttribute User user,@ModelAttribute UserInfoForm userInfoForm,Model model) {
-		System.out.println("控制层接收到user: " + user);
+		System.out.println("控制层 userinfochange 接收到模型：" + model.toString());
 		//对表单数据进行检验
 		userInfoForm = new UserInfoForm(true,true,true,true,true,true,true); // 用于向前端传递验证信息
 		if(user.getPasswd().length() < 6) {

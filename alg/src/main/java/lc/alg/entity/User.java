@@ -34,6 +34,44 @@ public class User{
 		this.qq = qq;
 		this.description = description;
 	}
+	public User(User other) {
+		if(other.name !=null) {
+			this.name = new String(other.getName());
+		}else {
+			this.name = null;
+		}
+		if(other.passwd !=null) {
+			this.passwd = new String(other.getPasswd());
+		}else {
+			this.passwd = null;
+		}
+		if(other.passwdConfirm != null) {
+			this.passwdConfirm = new String(other.getPasswdConfirm());
+		}else {
+			this.passwdConfirm=null;
+		}
+		if(other.email !=null) {
+			this.email = new String(other.getEmail());
+		}else {
+			this.email=null;
+		}
+		if(other.telephone !=null) {
+			this.telephone = new String(other.getTelephone());
+		}else {
+			this.telephone=null;
+		}
+		if(other.getQq() !=null) {
+			this.qq = new String(other.getQq());
+		}else {
+			this.qq = null;
+		}
+		if(other.getDescription() !=null) {
+			this.description=new String(other.getDescription());
+		}
+		else {
+			this.description=null;
+		}
+	}
 	public String getName() {
 		return name;
 	}

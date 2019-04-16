@@ -26,7 +26,7 @@
 		<div th:class="${response.nameValid == true} ? 'form-group':'form-group has-error'">
 			<label for="name" class="col-sm-2 control-label">姓名</label>
 			<div class="col-sm-6">
-				<input type="text" th:field="*{name}" th:value="*{name}" class="form-control" id="name" placeholder="请输入姓名">
+				<input type="text" th:field="*{name}" th:value="*{name}" class="form-control" id="name" placeholder="请输入姓名" readonly>
 			</div>
 		</div>
 		<div th:class="${response.passwdValid == true && response.passwdSame == true} ? 'form-group':'form-group has-error'">
