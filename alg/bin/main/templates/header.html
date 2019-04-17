@@ -17,7 +17,7 @@
 				<a class="navbar-brand" href="#">食品安全新闻数据分析系统</a>
 			</div>
 			<ul class="nav navbar-nav navbar-right">
-				<li><span class="text-primary" th:text="${'欢迎用户：' + user.name}"></span></li>
+				<li><span class="text-primary" th:text="${'欢迎用户：' + user_name}"></span></li>
 				<li><a th:href="@{/user}"><span class="glyphicon glyphicon-user">用户中心</span></a></li>
 				<li><a th:href="@{/}"><span class="glyphicon glyphicon-log-out">退出登录</span></a></li>
 			</ul>
@@ -28,7 +28,7 @@
 							爬虫管理<b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a href="#">启动新爬虫</a></li>
+							<li><a th:href="@{'/new_spider?user_name='+${user_name}}">启动新爬虫</a></li>
 							<li><a href="#">查看运行日志</a></li>
 						</ul>
 					</li>

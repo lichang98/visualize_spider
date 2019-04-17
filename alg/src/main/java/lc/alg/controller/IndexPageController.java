@@ -52,6 +52,7 @@ public class IndexPageController {
 		}else {
 			System.out.println("用户信息数据库验证成功!!");
 			model.addAttribute("response",new UserInfoForm(true,true,true,true,true,true,true));
+			model.addAttribute("user_name",user.getName());
 			System.out.println("model : " + model.toString());
 			return "user";
 		}
