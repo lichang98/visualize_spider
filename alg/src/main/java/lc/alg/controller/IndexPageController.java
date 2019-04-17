@@ -3,6 +3,8 @@
  */
 package lc.alg.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -62,8 +64,10 @@ public class IndexPageController {
 	 * 转向用户信息管理界面
 	 */
 	@RequestMapping(value="/user")
-	public String userInfoControl(@ModelAttribute User user,@ModelAttribute UserInfoForm userInfoForm,Model model) {
+	public String userInfoControl(@ModelAttribute User user,@ModelAttribute UserInfoForm userInfoForm,Model model,HttpServletRequest request) {
 		System.out.println("转向用户信息管理界面....");
+		model.addAttribute("user_name",request.getParameter("user_name"));
+		model.addAttribute("user",new User());
 		return "user";
 	}
 	

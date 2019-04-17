@@ -18,7 +18,7 @@
 			</div>
 			<ul class="nav navbar-nav navbar-right">
 				<li><span class="text-primary" th:text="${'欢迎用户：' + user_name}"></span></li>
-				<li><a th:href="@{/user}"><span class="glyphicon glyphicon-user">用户中心</span></a></li>
+				<li><a th:href="@{'/user?user_name='+${user_name}}"><span class="glyphicon glyphicon-user">用户中心</span></a></li>
 				<li><a th:href="@{/}"><span class="glyphicon glyphicon-log-out">退出登录</span></a></li>
 			</ul>
 			<div>
