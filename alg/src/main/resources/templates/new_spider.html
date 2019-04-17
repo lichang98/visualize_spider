@@ -31,13 +31,40 @@
 				<input type="text" class="form-control" id="taskName" placeholder="输入当前任务的名称">
 			</div>
 		</div>
+		<div class="panel panel-default col-sm-10 col-sm-offset-1">
+			<div class="panel-heading">
+				<h3 class="panel-title">添加爬虫配置参数</h3>
+			</div>
+			<table class="table">
+				<tr>
+					<td>
+						<div class="input-group">
+							<span class="input-group-addon">属性名称</span>
+							<input type="text" id="add_param" class="form-control">
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<span class="input-group-addon">xpath提取规则</span>
+							<input type="text" id="add_xpath" class="form-control">
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="add_param_btn" class="btn btn-primary">添加</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
 		<!-- 配置爬虫程序的表格 -->
-		<table class="table table-hover">
-			<caption>爬虫程序配置参数</caption>
+		<table id="spider_params" class="table table-hover col-sm-3 col-sm-offset-1" style="width:80%">
+			<caption class="text-left lead">爬虫程序配置参数</caption>
 			<thead>
 				<tr>
 					<th>提取属性名称(title, time...etc)</th>
 					<th>提取规则(xpath)</th>
+					<th>操作</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -45,4 +72,28 @@
 		</table>
 	</form>
 </body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("#add_param_btn").click(function(){
+			var add_param = $("#add_param").val();
+			var add_xpath = $("#add_xpath").val();
+			// 将添加参数增加到表格中
+			var tr = "<tr>"+"<td>"+add_param+"</td>"+"<td>"+add_xpath
+				+"</td>"+"<td><button type='button'  class='btn btn-danger'>删除</button></td>"+"</tr>";
+			$("table#spider_params tbody").append(tr);
+			$("table#spider_params tbody:last").hide();
+			$("table#spider_params tbody:last").fadeIn("slow");
+		});
+		$("table#spider_params").on("click",".btn-danger",function(){
+			//获取当前点击删除按钮所在行的参数值
+			var xpath = $(this).parent().prev().text();
+			var param = $(this).parent().prev().prev().text();
+			//查询当前单元行，删除元素
+			$("table#spider_params tbody").children(":contains('"+param+"'):contains('"+xpath+"')").fadeOut(
+					"slow",function(){
+						$(this).remove();
+					});
+		});
+	});
+</script>
 </html>
