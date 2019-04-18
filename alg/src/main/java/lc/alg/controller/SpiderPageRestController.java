@@ -13,11 +13,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.Gson;
 
 import lc.alg.entity.SpiderConfigInfo;
+import lc.alg.entity.SpiderRunInfo;
 
 /**
  * @author 李畅
@@ -45,5 +47,16 @@ public class SpiderPageRestController {
 		}
 		System.out.println("in get current spiders: 所有爬虫的任务名：" + spiderNameList);
 		return new Gson().toJson(spiderNameList);
+	}
+	
+	@RequestMapping("/spider_supervise/get_spider_runinfo")
+	public String getRunInfo(Model model, @RequestParam String taskName) {
+		Gson gson = new Gson();
+		taskName = gson.fromJson(taskName, String.class);
+		taskName = taskName.split(":")[1].trim();
+		System.out.println("in getruninfo: 当前查询的任务名称为：" + taskName);
+		Query query = new Query(Criteria.where("taskName").is(taskName));
+		SpiderRunInfo spiderRunInfo = mongoTemplate.findOne(query, SpiderRunInfo.class);
+		return new Gson().toJson(spiderRunInfo);
 	}
 }
