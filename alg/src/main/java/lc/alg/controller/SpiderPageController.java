@@ -49,4 +49,11 @@ public class SpiderPageController {
 		mongoTemplate.save(spiderConfigInfo, "spider_config");
 		return "new_spider";
 	}
+	
+	@RequestMapping("/spider_supervise")
+	public String superviseSpider(Model model,@RequestParam String user_name) {
+		model.addAttribute("user_name",user_name);
+		return "spider_supervise";
+	}
+	
 }

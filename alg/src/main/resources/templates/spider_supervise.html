@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<!-- jQuery文件 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- 引入 ECharts 文件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
+<title>爬虫运行情况监测</title>
+</head>
+<body>
+	<div th:include="header :: headpanel"></div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h5 class="text-primary">查看爬虫运行情况</h5>
+		</div>
+	</div>
+	<!-- 当前运行的爬虫列表 -->
+	<div class="panel panel-primary col-sm-offset-1" style="width:60%">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				当前运行的爬虫列表
+			</h3>
+		</div>
+		<div class="panel-body" id="curr_run_spiders">
+		</div>
+	</div>
+	<!-- tab页面 -->
+	<ul id="spider_run_tab" class="nav nav-tabs col-sm-offset-1" style="width:90%">
+		<li class="active">
+			<a href="#spider_meminfo" data-toggle="tab">爬虫内存使用情况</a>
+		</li>
+		<li>
+			<a href="#spider_getinfo" data-toggle="tab">爬虫抓取新闻数量变化</a>
+		</li>
+		<li>
+			<a href="#spider_runlog" data-toggle="tab">爬虫运行日志</a>
+		</li>
+	</ul>
+	<div id="spider_tab_content" class="tab-content col-sm-offset-1" style="width:90%">
+		<div class="tab-pane fade in active" id="spider_meminfo">
+			<p>内存使用情况</p>
+		</div>
+		<div class="tab-pane fade" id="spider_getinfo">
+			<p>获取新闻数量变化</p>
+		</div>
+		<div class="tab-pane fade pre-scrollable" id="spider_runlog">
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		//在加载完界面后，从后台获取爬虫列表
+		$.get("/spider_supervise/get_curr_spiders",function(data,status,xhr){
+			//添加爬虫列表
+			for(var i=0;i<data.length;i++){
+				$("#curr_run_spiders").append("<a href='#' class='list-group-item'>任务名称: "+data[i]+"</a>");
+			}
+		}, 'json');
+		
+	});
+</script>
+</html>

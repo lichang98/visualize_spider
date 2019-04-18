@@ -83,7 +83,7 @@
 		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-8 col-sm-offset-2">启动爬虫程序</button>
 	</form>
 </body>
-<script type="text/javascript">
+<script type="text/javascript" th:inline="javascript">
 	$(document).ready(function(){
 		$("#add_param_btn").click(function(){
 			var add_param = $("#add_param").val();
@@ -136,10 +136,12 @@
 				success:function(data){
 					//将提示成功的提示框设置为显示
 					$(".alert-success").css("display","block");
+					$("#spider_config_submit_btn").prop("disabled",false);
 				},
 				error: function(err){
 					//将提示错误的提示框设置为显示
 					$(".alert-danger").css("display","block");
+					$("#spider_config_submit_btn").prop("disabled",false);
 				}
 			});
 		});
