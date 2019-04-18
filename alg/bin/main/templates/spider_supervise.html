@@ -32,31 +32,41 @@
 	<!-- tab页面 -->
 	<ul id="spider_run_tab" class="nav nav-tabs col-sm-offset-1" style="width:90%">
 		<li class="active">
-			<a href="#spider_meminfo" data-toggle="tab">爬虫内存使用情况</a>
+			<a id="link_spider_meminfo" href="#spider_meminfo" data-toggle="tab">爬虫内存使用情况</a>
 		</li>
 		<li>
-			<a href="#spider_getinfo" data-toggle="tab">爬虫抓取新闻数量变化</a>
+			<a id="link_spider_getinfo" href="#spider_getinfo" data-toggle="tab">爬虫抓取新闻数量变化</a>
 		</li>
 		<li>
-			<a href="#spider_runlog" data-toggle="tab">爬虫运行日志</a>
+			<a id="link_spider_runlog" href="#spider_runlog" data-toggle="tab">爬虫运行日志</a>
 		</li>
 	</ul>
-	<div id="spider_tab_content" class="tab-content col-sm-offset-1" style="width:90%">
-		<div class="tab-pane fade in active" id="spider_meminfo" style="width:80%;height:400px;top:50px;left:10%;bottom:10%;border:3px solid #ADD8E6">
+	<div id="spider_tab_content" class="tab-content" style="width:90%;margin-bottom:50px">
+		<div class="tab-pane fade in active" id="spider_meminfo" style="width:80%;margin:20px;height:400px;top:5%;left:10%;bottom:10%;border:3px solid #ADD8E6">
 			<!-- 内存使用情况 -->
 
 		</div>
-		<div class="tab-pane fade" id="spider_getinfo">
+		<div class="tab-pane fade" id="spider_getinfo" style="width:80%;margin:20px;height:400px;top:5%;left:10%;bottom:10%;border:3px solid #ADD8E6">
 			<!-- 获取新闻数量变化 -->
 			
 		</div>
-		<div class="tab-pane fade pre-scrollable" id="spider_runlog">
+		<div class="tab-pane fade pre-scrollable col-sm-offset-1" id="spider_runlog">
 			<!-- 运行日志文件显示 -->
+			<pre></pre>
 		</div>
 	</div>
+	<footer class="footer">
+		<div th:include="footer :: footer_panel"></div>
+	</footer>
 </body>
 <script type="text/javascript">
 	$(document).ready(function(){
+		var memInfoX=new Array();
+		var memInfoY=new Array();
+		var getCountInfoX=new Array();
+		var getCountInfoY=new Array();
+		var runlog=new String();
+		
 		//在加载完界面后，从后台获取爬虫列表
 		$.get("/spider_supervise/get_curr_spiders",function(data,status,xhr){
 			//添加爬虫列表
@@ -65,53 +75,12 @@
 			}
 		}, 'json');
 		
-		//添加爬虫列表点击监听，根据点击的任务名称，ajax 异步更新下方信息
-		$("body").on("click",".list-group-item",function(){
-			var memInfo = new Array();
-			var getCountInfo = new Array();
-			var runlog = new String();
-			//ajax 请求该任务的信息
-			$.ajax({
-				async:false,
-				type:'GET',
-				contentType:'application/json',
-				url:"/spider_supervise/get_spider_runinfo",
-				data:{"taskName":JSON.stringify($(this).text())},
-				dataType:'json',
-				cache:false,
-				timeout:5000,
-				success:function(data){
-					memInfo = data["memInfo"];
-					getCountInfo = data["getCountInfo"];
-					runlog = data["runlog"];					
-				},
-				error:function(e){
-					
-				}
-			});
-			//更新界面下半部分的数据为该任务对应的数据
-			//使用echart绘制折线图
-			var memInfoX = new Array();
-			var memInfoY = new Array();
-			for(var i=0;i<memInfo.length;i++){
-				Object.keys(memInfo[i]).forEach(function(key){
-					memInfoX.push(key);
-					memInfoY.push(memInfo[i][key]);
-				});
+		$("#link_spider_meminfo").click(function(){
+			//内存使用信息绘图
+			if(memInfoX.length == 0){
+				return;
 			}
-			var getCountInfoX = new Array();
-			var getCountInfoY = new Array();
-			for(var i=0;i<getCountInfo.length;i++){
-				Object.keys(getCountInfo[i]).forEach(function(key){
-					getCountInfoX.push(key);
-					getCountInfoY.push(getCountInfo[i][key]);
-				});
-			}
-			console.log("memInfoX:"+memInfoX);
-			console.log("memInfoY:" + memInfoY);
-			console.log("getCountInfoX:" + getCountInfoX);
-			console.log("getCountInfoY:" + getCountInfoY);
-			var memInfoChart = echarts.init(document.getElementById("spider_meminfo"));
+			var memInfoChart=echarts.init(document.getElementById("spider_meminfo"));
 			var dataX = memInfoX;
 			var dataY = memInfoY;
 			var dataZ = new Array();
@@ -241,7 +210,210 @@
 						animation:false
 					}]
 			};
-			memInfoChart.setOption(option);
+			memInfoChart.setOption(option,true);
+			setTimeout(function(){
+				memInfoChart.resize();
+			},300);
+		});
+		
+		$("#link_spider_getinfo").click(function(){
+			if(memInfoX.length==0){
+				return;
+			}
+			var getInfoChart = echarts.init(document.getElementById("spider_getinfo"));
+			var dataZ = new Array();
+			var dataX = getCountInfoX;
+			var dataY = getCountInfoY;
+			for(var i=0;i<dataX.length;i++){
+				dataZ.push(1000);
+			}
+			var option={
+					title:{
+						text:"每小时获取的新闻文本数量",
+						left:"10%",
+						textStyle:{
+							color:"#fff",
+							fontSize:15,
+							bottom:20
+						}
+					},
+					grid:{
+						left:40,
+						right:40,
+						top:30,
+						bottom:25
+					},
+					backgroundColor:"rgba(0,0,0,0.8)",
+					tooltip:{
+						trigger:"item",
+						formatter:"{a}<br/>{b} : {c}%"
+					},
+					xAxis:{
+						type:'category',
+						position:'bottom',
+						axisLine:{
+							show:false
+						},
+						axisTick:{
+							show:false
+						},
+						axisLabel:{
+							color:"#fff",
+							fontSize:12
+						},
+						data:dataX
+					},
+					yAxis:{
+						splitNumber:5,
+						axisLine:{
+							show:false
+						},
+						axisTick:{
+							show:false
+						},
+						splitLine:{
+							show:true,
+							lineStyle:{
+								color:'#fff',
+								opacity:0.2
+							}
+						},
+						axisLabel:{
+							color:"#fff",
+							fontSize:12
+						}
+					},
+					series:[{
+						name:"获取的新闻数量",
+						type:"line",
+						data:dataY,
+						smooth:true,
+						symbol:"emptyCircle",
+						symbolSize:5,
+						itemStyle:{
+							normal:{
+								color:"#fff"
+							}
+						},
+						lineStyle:{
+							normal:{
+								color:{
+									type:"linear",
+									x:0,
+									y:0,
+									x2:0,
+									y2:1,
+									colorStops:[{
+										offset:0,color:"rgba(255,0,0,0.8)"
+									},{
+										offset:1,color:"rgba(0,0,238,0.8)"
+									}],
+									globalCoord:false
+								},
+								width:3
+							}
+						},
+						areaStyle:{
+							normal:{
+								color:"rgba(51,255,255,0.3)"
+							}
+						},
+						
+					},{
+						name:"占位背景",
+						type:"bar",
+						itemStyle:{
+							normal:{
+								show:true,
+								color:"#fff",
+								opacity:0
+							}
+						},
+						silent:true,
+						barWidth:"50%",
+						data:dataZ,
+						animation:false
+					},{
+						name:"占位背景",
+						type:"bar",
+						itemStyle:{
+							normal:{
+								show:true,
+								color:"#fff",
+								opacity:0.1
+							}
+						},
+						silent:true,
+						barWidth:"50%",
+						barGap:0,
+						data:dataZ,
+						animation:false
+					}]
+			};
+			getInfoChart.setOption(option,true);
+			setTimeout(function(){
+				getInfoChart.resize();
+			},300);
+		});
+		
+		$("#link_spider_runlog").click(function(){
+			console.log("爬虫日志tab 点击, runlog内容:" + runlog);
+			$("#spider_runlog>pre").text(runlog);
+		});
+		
+		//添加爬虫列表点击监听，根据点击的任务名称，ajax 异步更新下方信息
+		$("body").on("click",".list-group-item",function(){
+			var memInfo = new Array();
+			var getCountInfo = new Array();
+// 			console.log("当前元素的parent:" + $(this).parent().html());
+// 			console.log($(this).parent().children().length);
+			for(var i=0;i<$(this).parent().children().length;i++){
+				$(this).parent().children(":nth-child("+i+")").attr("class","list-group-item");
+			}
+			$(this).attr("class","list-group-item active");
+			//ajax 请求该任务的信息
+			$.ajax({
+				async:false,
+				type:'GET',
+				contentType:'application/json',
+				url:"/spider_supervise/get_spider_runinfo",
+				data:{"taskName":JSON.stringify($(this).text())},
+				dataType:'json',
+				cache:false,
+				timeout:5000,
+				success:function(data){
+					memInfo = data["memInfo"];
+					getCountInfo = data["getCountInfo"];
+					runlog = data["runlog"];					
+				},
+				error:function(e){
+					
+				}
+			});
+			//更新界面下半部分的数据为该任务对应的数据
+			//使用echart绘制折线图
+			memInfoX = new Array();
+			memInfoY = new Array();
+			for(var i=0;i<memInfo.length;i++){
+				Object.keys(memInfo[i]).forEach(function(key){
+					memInfoX.push(key);
+					memInfoY.push(memInfo[i][key]);
+				});
+			}
+			getCountInfoX = new Array();
+			getCountInfoY = new Array();
+			for(var i=0;i<getCountInfo.length;i++){
+				Object.keys(getCountInfo[i]).forEach(function(key){
+					getCountInfoX.push(key);
+					getCountInfoY.push(getCountInfo[i][key]);
+				});
+			}
+			console.log("memInfoX:"+memInfoX);
+			console.log("memInfoY:" + memInfoY);
+			console.log("getCountInfoX:" + getCountInfoX);
+			console.log("getCountInfoY:" + getCountInfoY);
+			//触发按钮点击
+			$("#link_spider_meminfo").trigger("click");
 		});
 	});
 </script>

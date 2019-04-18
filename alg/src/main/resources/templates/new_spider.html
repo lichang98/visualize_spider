@@ -41,7 +41,7 @@
 				<input type="text" class="form-control" id="taskName" placeholder="输入当前任务的名称">
 			</div>
 		</div>
-		<div class="panel panel-default col-sm-10 col-sm-offset-1">
+		<div class="panel panel-default col-sm-offset-1" style="width:80%">
 			<div class="panel-heading">
 				<h3 class="panel-title">添加爬虫配置参数</h3>
 			</div>
@@ -68,7 +68,7 @@
 			</table>
 		</div>
 		<!-- 配置爬虫程序的表格 -->
-		<table id="spider_params" class="table table-hover col-sm-3 col-sm-offset-1" style="width:80%">
+		<table id="spider_params" class="table table-hover col-sm-offset-1" style="width:80%">
 			<caption class="text-left lead">爬虫程序配置参数</caption>
 			<thead>
 				<tr>
@@ -80,8 +80,11 @@
 			<tbody id="spider_config_tbody">
 			</tbody>
 		</table>
-		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-8 col-sm-offset-2">启动爬虫程序</button>
+		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-offset-2" style="width:70%">启动爬虫程序</button>
 	</form>
+	<footer class="footer">
+		<div th:include="footer :: footer_panel"></div>
+	</footer>
 </body>
 <script type="text/javascript" th:inline="javascript">
 	$(document).ready(function(){
