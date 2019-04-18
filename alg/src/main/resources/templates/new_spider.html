@@ -17,8 +17,18 @@
 			<h5 class="text-primary">创建新的爬虫程序</h5>
 		</div>
 	</div>
+	<input type="hidden" id="user_name_hidden" th:value="${user_name}">
+	<!-- 爬虫配置提交后的提示信息 -->
+	<div class="alert alert-success alert-dismissable" style="display:none">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		爬虫配置成功!
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display:none">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		爬虫配置提交错误!
+	</div>
 	<!-- 爬虫配置表单 -->
-	<form class="form-horizontal" role="form">
+	<form class="form-horizontal" role="form" id="spider_config_form">
 		<div class="form-group">
 			<label for="targetUrl" class="col-sm-2 control-label">目标网址</label>
 			<div class="col-sm-6">
@@ -67,9 +77,10 @@
 					<th>操作</th>
 				</tr>
 			</thead>
-			<tbody>
+			<tbody id="spider_config_tbody">
 			</tbody>
 		</table>
+		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-8 col-sm-offset-2">启动爬虫程序</button>
 	</form>
 </body>
 <script type="text/javascript">
@@ -77,6 +88,11 @@
 		$("#add_param_btn").click(function(){
 			var add_param = $("#add_param").val();
 			var add_xpath = $("#add_xpath").val();
+			//判断该解析规则是否已经添加到表格中
+			if($("table#spider_params tbody").children(":contains('"+add_param+"'):contains('"+add_xpath+"')").html() != undefined){
+				alert("该规则已经添加!");
+				return;
+			}
 			// 将添加参数增加到表格中
 			var tr = "<tr>"+"<td>"+add_param+"</td>"+"<td>"+add_xpath
 				+"</td>"+"<td><button type='button'  class='btn btn-danger'>删除</button></td>"+"</tr>";
@@ -93,6 +109,39 @@
 					"slow",function(){
 						$(this).remove();
 					});
+		});
+		//使用jquery 提交表单数据
+		$("#spider_config_submit_btn").on("click",function(event){
+			event.preventDefault();
+			$("#spider_config_submit_btn").prop("disabled",true);
+			var send_data={};
+			send_data["userName"] = $("#user_name_hidden").val();
+			config_info={};
+			config_info["targetUrl"] = $("#targetUrl").val();
+			config_info["taskName"] = $("#taskName").val();
+			config_info["attributeParser"] = new Array();
+			$("#spider_config_tbody").find('tr').each(function(){
+				//alert($(this).children(":nth-child(1)").text());
+				rule={}
+				rule[$(this).children(":nth-child(1)").text()] = $(this).children(":nth-child(2)").text();
+				config_info["attributeParser"].push(rule);
+			});
+			send_data["spiderConfigInfo"] = config_info;
+			$.ajax({
+				type:'POST',
+				url:'/start_spider',
+				data: {"send_data":JSON.stringify(send_data)},
+				cache:false,
+				timeout:5000,
+				success:function(data){
+					//将提示成功的提示框设置为显示
+					$(".alert-success").css("display","block");
+				},
+				error: function(err){
+					//将提示错误的提示框设置为显示
+					$(".alert-danger").css("display","block");
+				}
+			});
 		});
 	});
 </script>
