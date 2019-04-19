@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -55,6 +57,18 @@ public class SpiderPageController {
 	public String superviseSpider(Model model,@RequestParam String user_name) {
 		model.addAttribute("user_name",user_name);
 		return "spider_supervise";
+	}
+	
+	/**
+	 * –ﬁ∏ƒ≈¿≥Êµƒ≈‰÷√
+	 */
+	@RequestMapping("/spider_change_cfg")
+	public String changeConfig(Model model,@RequestParam String user_name,@RequestParam String taskName) {
+		System.out.println("in spider change cfg control, user_name="+user_name+","
+				+ "taskname="+taskName);
+		model.addAttribute("user_name",user_name);
+		model.addAttribute("taskName",taskName);
+		return "spider_change_cfg";
 	}
 	
 }

@@ -71,9 +71,20 @@
 		$.get("/spider_supervise/get_curr_spiders",function(data,status,xhr){
 			//添加爬虫列表
 			for(var i=0;(2*i+1)<data.length;i++){
-				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-9'>任务名称: "+data[i*2]+"<span class='badge'>:"+data[2*i+1]+"</span></a><input class='col-sm-1' style='visibility:hidden'> <button type='button' class='btn btn-success col-sm-2'>修改配置</button>");
+				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-9'>任务名称: "+data[i*2]+"<span class='badge'>:"+data[2*i+1]+"</span></a><input class='col-sm-1' style='visibility:hidden'> <button id="+data[i*2]+"_btn_cg type='button' class='btn btn-success col-sm-2'>修改配置</button>");
 			}
 		}, 'json');
+		
+		//修改配置按钮的点击事件
+		$("body").on("click",".btn-success",function(){
+// 			console.log("当前点击修改的任务名称是:"+$(this).attr("id").split("_")[0]);
+// 			var user_name = "[[${user_name}]]";
+// 			$.post("/spider_change_cfg",{"user_name":user_name,
+// 				"taskName":$(this).attr("id").split("_")[0]},"json");
+			var user_name = "[[${user_name}]]";
+			var taskName = $(this).attr("id").split("_")[0];
+			window.location.href="/spider_change_cfg?user_name="+user_name+"&taskName="+taskName;
+		});
 		
 		$("#link_spider_meminfo").click(function(){
 			//内存使用信息绘图
