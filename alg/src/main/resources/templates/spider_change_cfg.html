@@ -17,11 +17,136 @@
 			<h2 class="text-primary">修改爬虫配置</h2>
 		</div>
 	</div>
-	
-	
+	<div class="alert alert-success alert-dismissable" style="display:none">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		配置修改成功!
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display:none">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		配置修改失败!
+	</div>
+	<!-- 爬虫配置表单 -->
+	<form class="form-horizontal" role="form" id="spider_config_form">
+		<div class="form-group">
+			<label for="taskName" class="col-sm-2 control-label">任务名称</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="taskName" th:value="${taskName}" readonly="readonly">
+			</div>
+		</div>
+		<div class="panel panel-default col-sm-offset-1" style="width:80%">
+			<div class="panel-heading">
+				<h3 class="panel-title">修改爬虫配置</h3>
+			</div>
+			<table class="table">
+				<tr>
+					<td>
+						<div class="input-group">
+							<span class="input-group-addon">属性名称</span>
+							<input type="text" id="add_param" class="form-control">
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<span class="input-group-addon">xpath提取规则</span>
+							<input type="text" id="add_xpath" class="form-control">
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="add_param_btn" class="btn btn-primary">添加</button>
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="param_input_clear" class="btn btn-danger">清空输入框</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- 配置爬虫参数的表格 -->
+		<table id="spider_params" class="table table-hover col-sm-offset-1" style="width:80%">
+			<caption class="text-left lead">爬虫配置参数</caption>
+			<thead>
+				<tr>
+					<th>提取属性名称(title, time...etc)</th>
+					<th>提取规则(xpath)</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="spider_config_tbody">
+			</tbody>
+		</table>
+		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-offset-2" style="width:70%">提交修改</button>
+	</form>
 	
 	<footer class="footer">
 		<div th:include="footer :: footer_panel"></div>
 	</footer>
 </body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		//请求获取当前任务的信息
+		var taskName = "[[${taskName}]]";
+		var attributes= new Array();
+		var config_attrs=new Array(); //配置属性名称, title, url ...
+		var config_vals=new Array();	//对应的xpath配置值
+		//设置get 同步
+		$.ajaxSetup({async:false});
+		$.get("/spider_change_cfg/get_spiderinfo_by_taskName",{"taskName":taskName},function(data){
+			console.log("获取的数据:"+JSON.stringify(data));
+			attributes = data["attributeParser"];
+			for(var i=0;i<attributes.length;i++){
+				Object.keys(attributes[i]).forEach(function(key){
+					console.log(key+"----->"+attributes[i][key]);
+					config_attrs.push(key);
+					config_vals.push(attributes[i][key])
+				});
+			}
+		},"json");
+		//将数据更新的表格的表单中
+		console.log("即将更新数据:");
+		console.log("属性列表:"+config_attrs.toString());
+		console.log("属性取值列表:"+config_vals.toString());
+		for(var i=0;i<config_attrs.length;i++){
+			//$("#spider_config_tbody").append("<tr><td>"+config_attrs[i]+"</td><td>"+config_vals[i]+"</td><td><button type='button' class='btn btn-danger'>删除</button></td></tr>");
+			var tr = "<tr><td>"+config_attrs[i]+"</td><td>"+config_vals[i]+"</td><td><button type='button' class='btn btn-danger'>删除</button></td></tr>";
+			$("#spider_config_tbody").append(tr);
+			$("#spider_config_tbody:last").hide();
+			$("#spider_config_tbody:last").fadeIn("slow");
+		}
+		
+		$("#add_param_btn").click(function(){
+			var add_param = $("#add_param").val();
+			var add_xpath = $("#add_xpath").val();
+			//判断该解析规则是否已经添加到表格中
+			if($("table#spider_params tbody").children(":contains('"+add_param+"'):contains('"+add_xpath+"')").html() != undefined){
+				alert("该规则已经添加!");
+				return;
+			}
+			// 将添加参数增加到表格中
+			var tr = "<tr>"+"<td>"+add_param+"</td>"+"<td>"+add_xpath
+				+"</td>"+"<td><button type='button'  class='btn btn-danger'>删除</button></td>"+"</tr>";
+			$("table#spider_params tbody").append(tr);
+			$("table#spider_params tbody:last").hide();
+			$("table#spider_params tbody:last").fadeIn("slow");
+		});
+		$("table#spider_params").on("click",".btn-danger",function(){
+			//获取当前点击删除按钮所在行的参数值
+			var xpath = $(this).parent().prev().text();
+			var param = $(this).parent().prev().prev().text();
+			//查询当前单元行，删除元素
+			$("table#spider_params tbody").children(":contains('"+param+"'):contains('"+xpath+"')").fadeOut(
+					"slow",function(){
+						$(this).remove();
+					});
+		});
+		$("#param_input_clear").on("click",function(){
+			//清空输入框
+			$("#add_param").val("");
+			$("#add_xpath").val("");
+		});
+		
+	});
+</script>
 </html>

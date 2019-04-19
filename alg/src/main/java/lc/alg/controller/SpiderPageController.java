@@ -68,6 +68,10 @@ public class SpiderPageController {
 				+ "taskname="+taskName);
 		model.addAttribute("user_name",user_name);
 		model.addAttribute("taskName",taskName);
+		//查询当前任务的配置信息，传递到前端的页面
+		Query query = new Query(Criteria.where("taskName").is(taskName));
+		SpiderConfigInfo spiderConfigInfo = mongoTemplate.findOne(query, SpiderConfigInfo.class);
+		model.addAttribute("spider_config",spiderConfigInfo);
 		return "spider_change_cfg";
 	}
 	

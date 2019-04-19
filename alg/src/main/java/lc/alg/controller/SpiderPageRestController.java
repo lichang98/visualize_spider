@@ -61,4 +61,14 @@ public class SpiderPageRestController {
 		SpiderRunInfo spiderRunInfo = mongoTemplate.findOne(query, SpiderRunInfo.class);
 		return new Gson().toJson(spiderRunInfo);
 	}
+	
+	@RequestMapping("/spider_change_cfg/get_spiderinfo_by_taskName")
+	public String getSpiderInfoByTaskname(@RequestParam String taskName) {
+		System.out.println("in getSpiderInfoByTaskname, taskName="+taskName);
+		//从数据库查询该任务的所有配置attributeParser的信息，并返回json格式数据
+		Query query = new Query(Criteria.where("taskName").is(taskName));
+		SpiderConfigInfo spiderConfigInfo = mongoTemplate.findOne(query, SpiderConfigInfo.class);
+		Gson gson = new Gson();
+		return gson.toJson(spiderConfigInfo);
+	}
 }
