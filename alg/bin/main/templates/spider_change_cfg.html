@@ -146,6 +146,23 @@
 			$("#add_param").val("");
 			$("#add_xpath").val("");
 		});
+		$("#spider_config_form").submit(function(event){
+			event.preventDefault();
+			config=new Array();
+			for(var i=1;i<=$("#spider_config_tbody").children().length;i++){
+				console.log($("#spider_config_tbody").children(":nth-child("+i+")").children(":nth-child(1)").text());
+				config.push($("#spider_config_tbody").children(":nth-child("+i+")").children(":nth-child(1)").text());
+				config.push($("#spider_config_tbody").children(":nth-child("+i+")").children(":nth-child(2)").text());
+			}
+			console.log("获取的所有的配置参数为:"+config);
+			$.post("spider_change_cfg/update_cfg",{"config":JSON.stringify(config),"taskName":JSON.stringify("[[${taskName}]]")},function(){},"json");
+			window.location.href="/spider_supervise?user_name=[[${user_name}]]";
+		});
+// 		$("#spider_config_submit_btn").on("click",function(){
+// 			console.log("表单提交操作");
+// 			$.post("/spider_change_cfg/update_cfg","",function(){},"json");
+// 			window.location.href("/spider_supervise?user_name=[[${user_name}]]");
+// 		});
 		
 	});
 </script>

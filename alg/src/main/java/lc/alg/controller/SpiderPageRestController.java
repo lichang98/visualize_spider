@@ -4,13 +4,16 @@
 package lc.alg.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -70,5 +73,29 @@ public class SpiderPageRestController {
 		SpiderConfigInfo spiderConfigInfo = mongoTemplate.findOne(query, SpiderConfigInfo.class);
 		Gson gson = new Gson();
 		return gson.toJson(spiderConfigInfo);
+	}
+	
+	/**
+	 * 
+	 * @param config: json 字符串格式的参数
+	 * @return
+	 */
+	@RequestMapping("/spider_change_cfg/update_cfg")
+	public String updateConfig(@RequestParam String config,@RequestParam String taskName) {
+		Gson gson = new Gson();
+		String taskname = gson.fromJson(taskName, String.class);
+		List<Map<String,String>> attributeParser = new ArrayList<Map<String,String>>();
+		ArrayList<String> getConfigList = gson.fromJson(config, ArrayList.class);
+		System.out.println("taskname="+taskname+", configlist="+getConfigList);
+		for(int i=0;i*2<getConfigList.size();i++) {
+			Map<String,String> mp = new HashMap<String,String>();
+			mp.put(getConfigList.get(2*i), getConfigList.get(2*i+1));
+			attributeParser.add(mp);
+		}
+		//将配置更新到数据库中
+		Query query = new Query(Criteria.where("taskName").is(taskname));
+		Update update = new Update().set("attributeParser",attributeParser);
+		mongoTemplate.updateFirst(query, update, SpiderConfigInfo.class);
+		return "";
 	}
 }
