@@ -16,7 +16,7 @@
 	<div th:include="header :: headpanel"></div>
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h5 class="text-primary">查看爬虫运行情况</h5>
+			<h2 class="text-primary">查看爬虫运行情况</h2>
 		</div>
 	</div>
 	<!-- 当前运行的爬虫列表 -->
@@ -70,8 +70,8 @@
 		//在加载完界面后，从后台获取爬虫列表
 		$.get("/spider_supervise/get_curr_spiders",function(data,status,xhr){
 			//添加爬虫列表
-			for(var i=0;i<data.length;i++){
-				$("#curr_run_spiders").append("<a href='#' class='list-group-item'>任务名称: "+data[i]+"</a>");
+			for(var i=0;(2*i+1)<data.length;i++){
+				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-9'>任务名称: "+data[i*2]+"<span class='badge'>:"+data[2*i+1]+"</span></a><input class='col-sm-1' style='visibility:hidden'> <button type='button' class='btn btn-success col-sm-2'>修改配置</button>");
 			}
 		}, 'json');
 		

@@ -3,10 +3,13 @@
  */
 package lc.alg.entity;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  * @author 李畅
  *	该类对应mongodb 数据库中新闻文本的相关信息
  */
+@Document(collection="news_docs")
 public class NewsDocs {
 
 	private String title;

@@ -43,9 +43,11 @@ public class SpiderPageRestController {
 		System.out.println("in get current spiders: 查询所有的爬虫数据：" + spiderInfos);
 		Iterator<SpiderConfigInfo> iter = spiderInfos.iterator();
 		while(iter.hasNext()) {
-			spiderNameList.add(iter.next().getTaskName());
+			SpiderConfigInfo configInfo = iter.next();
+			spiderNameList.add(configInfo.getTaskName());
+			spiderNameList.add(configInfo.getCurStatus());
 		}
-		System.out.println("in get current spiders: 所有爬虫的任务名：" + spiderNameList);
+		System.out.println("in get current spiders: 所有爬虫的任务名以及状态：" + spiderNameList);
 		return new Gson().toJson(spiderNameList);
 	}
 	

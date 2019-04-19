@@ -18,15 +18,18 @@ public class SpiderConfigInfo {
 	private String targetUrl; // 爬虫运行的网址
 	private String taskName;	// 当前任务的名称
 	private List<Map<String,String>> attributeParser; // 爬取的属性以及对应的解析规则
+	private String curStatus;	//爬虫当前的状态, running, finish,pending
 	public SpiderConfigInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public SpiderConfigInfo(String targetUrl, String taskName, List<Map<String, String>> attributeParser) {
+	public SpiderConfigInfo(String targetUrl, String taskName, List<Map<String, String>> attributeParser,
+			String curStatus) {
 		super();
 		this.targetUrl = targetUrl;
 		this.taskName = taskName;
 		this.attributeParser = attributeParser;
+		this.curStatus = curStatus;
 	}
 	public String getTargetUrl() {
 		return targetUrl;
@@ -46,11 +49,16 @@ public class SpiderConfigInfo {
 	public void setAttributeParser(List<Map<String, String>> attributeParser) {
 		this.attributeParser = attributeParser;
 	}
+	public String getCurStatus() {
+		return curStatus;
+	}
+	public void setCurStatus(String curStatus) {
+		this.curStatus = curStatus;
+	}
 	@Override
 	public String toString() {
 		return "SpiderConfigInfo [targetUrl=" + targetUrl + ", taskName=" + taskName + ", attributeParser="
-				+ attributeParser + "]";
+				+ attributeParser + ", curStatus=" + curStatus + "]";
 	}
-	
 	
 }

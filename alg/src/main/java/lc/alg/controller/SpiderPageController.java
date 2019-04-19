@@ -46,6 +46,7 @@ public class SpiderPageController {
 		System.out.println("转换后的数据：" + spiderConfigForm);
 		//将爬虫的配置信息添加到mongodb中
 		SpiderConfigInfo spiderConfigInfo = spiderConfigForm.getSpiderConfigInfo();
+		spiderConfigInfo.setCurStatus("pending");	// 设置当前状态为pending
 		mongoTemplate.save(spiderConfigInfo, "spider_config");
 		return "new_spider";
 	}

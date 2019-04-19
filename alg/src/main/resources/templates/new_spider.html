@@ -14,7 +14,7 @@
 	<div th:include="header :: headpanel"></div>
 	<div class="panel panel-default">
 		<div class="panel-body">
-			<h5 class="text-primary">创建新的爬虫程序</h5>
+			<h2 class="text-primary">创建新的爬虫程序</h2>
 		</div>
 	</div>
 	<input type="hidden" id="user_name_hidden" th:value="${user_name}">
@@ -62,6 +62,11 @@
 					<td>
 						<div class="input-group">
 							<button type="button" id="add_param_btn" class="btn btn-primary">添加</button>
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="param_input_clear" class="btn btn-danger">清空输入框</button>
 						</div>
 					</td>
 				</tr>
@@ -113,6 +118,12 @@
 						$(this).remove();
 					});
 		});
+		$("#param_input_clear").on("click",function(){
+			//清空输入框
+			$("#add_param").val("");
+			$("#add_xpath").val("");
+		});
+		
 		//使用jquery 提交表单数据
 		$("#spider_config_submit_btn").on("click",function(event){
 			event.preventDefault();
