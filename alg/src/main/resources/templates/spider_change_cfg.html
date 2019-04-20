@@ -53,6 +53,11 @@
 							<button type="button" id="param_input_clear" class="btn btn-danger">清空输入框</button>
 						</div>
 					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="config_help" class="btn btn-info">配置帮助</button>
+						</div>
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -144,6 +149,14 @@
 			//清空输入框
 			$("#add_param").val("");
 			$("#add_xpath").val("");
+		});
+		$("#config_help").on("click",function(){
+			//打开配置帮助页面
+			var user_name="[[${user_name}]]";
+			var link=$("<a href='/spider_change_cfg/cfg_help?user_name="+user_name+"' target='_blank'>帮助页面</a>").get(0);
+			var e = document.createEvent("MouseEvents");
+			e.initEvent("click",true,true);
+			link.dispatchEvent(e);
 		});
 		$("#spider_config_form").submit(function(event){
 			event.preventDefault();

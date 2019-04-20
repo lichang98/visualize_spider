@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<!-- jQuery文件 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<title>爬虫配置帮助页面</title>
+</head>
+<body>
+	<div th:include="header :: headpanel"></div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h2 class="text-primary">爬虫配置使用帮助</h2>
+		</div>
+	</div>
+	<!-- 爬虫配置参数说明 -->
+	<table class="table table-striped col-sm-offset-1" style="width:80%">
+		<caption class="lead">爬虫配置参数说明</caption>
+		<thead>
+			<tr>
+				<th>属性名称</th>
+				<th>是否可以设置多个</th>
+				<th>配置样例</th>
+				<td>属性说明</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>web_domain</td>
+				<td>否</td>
+				<td>https://search.cctv.com</td>
+				<td>爬虫目标网站的域名</td>
+			</tr>
+			<tr>
+				<td>start_url</td>
+				<td>否</td>
+				<td>https://search.cctv.com/search.php?qtext=%E9%A3%9F%E5%93%81%E5%AE%89%E5%85%A8%E4%BA%8B%E4%BB%B6&type=web</td>
+				<td>爬虫的起始网址</td>
+			</tr>
+			<tr>
+				<td>main_domain</td>
+				<td>是</td>
+				<td>cctv.com</td>
+				<td>网站的机构域名, 在爬取数据时，不属于该域名的会被过滤</td>
+			</tr>
+			<tr>
+				<td>url</td>
+				<td>否</td>
+				<td>//div[@class="tuwenjg"]//a[@id and @href]/@href</td>
+				<td>新闻列表界面, 每条新闻的url链接</td>
+			</tr>
+			<tr>
+				<td>next_page</td>
+				<td>否</td>
+				<td>//a[@class="page-next"]/@href</td>
+				<td>下一页的链接</td>
+			</tr>
+			<tr>
+				<td>title</td>
+				<td>是</td>
+				<td>//h1[1]/text()</td>
+				<td>新闻内容界面标题</td>
+			</tr>
+			<tr>
+				<td>releaseTime</td>
+				<td>是</td>
+				<td>//span[@class="info"][1]/i/text()[2]</td>
+				<td>新闻内容界面, 发布时间</td>
+			</tr>
+			<tr>
+				<td>content</td>
+				<td>是</td>
+				<td>//div[@class="cnt_bd"]//p/text()</td>
+				<td>新闻的主体内容</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- 图片说明 -->
+	<div class="panel panel-info col-sm-offset-1" style="width:70%">
+		<div class="panel-heading">
+			<span class="lead">样例</span>
+		</div>
+	</div>
+	<div class="panel panel-primary col-sm-offset-1" style="width:70%">
+		<div class="panel-heading">
+			<h3 class="panel-title">页面链接列表的获取</h3>
+		</div>
+		<div class="panel-body">
+			<img alt="获取页面链接列表" th:src="@{/img/url_get.PNG}" class="img-responsive">
+		</div>
+	</div>
+	<div class="panel panel-primary col-sm-offset-1" style="width:70%">
+		<div class="panel-heading">
+			<h3 class="panel-title">下一页链接</h3>
+		</div>
+		<div class="panel-body">
+			<img alt="下一页链接" th:src="@{/img/next_page_get.PNG}" class="img-responsive">
+		</div>
+	</div>
+	<div class="panel panel-primary col-sm-offset-1" style="width:70%">
+		<div class="panel-heading">
+			<h3 class="panel-title">新闻标题</h3>
+		</div>
+		<div class="panel-body">
+			<img alt="新闻标题" th:src="@{/img/title_get.PNG}" class="img-responsive">
+		</div>
+	</div>
+	<div class="panel panel-primary col-sm-offset-1" style="width:70%">
+		<div class="panel-heading">
+			<h3 class="panel-title">发布时间</h3>
+		</div>
+		<div class="panel-body">
+			<img alt="发布时间" th:src="@{/img/releaseTime_get.PNG}" class="img-responsive">
+		</div>
+	</div>
+	<div class="panel panel-primary col-sm-offset-1" style="width:70%">
+		<div class="panel-heading">
+			<h3 class="panel-title">新闻主体内容</h3>
+		</div>
+		<div class="panel-body">
+			<img alt="新闻主体内容" th:src="@{/img/content_get.PNG}" class="img-responsive">
+		</div>
+	</div>
+	<footer class="footer">
+		<div th:include="footer :: footer_panel"></div>
+	</footer>
+</body>
+</html>

@@ -75,4 +75,10 @@ public class SpiderPageController {
 		return "spider_change_cfg";
 	}
 	
+	@RequestMapping("/spider_change_cfg/cfg_help")
+	public String configHelp(Model model,@RequestParam String user_name) {
+		model.addAttribute("user_name",user_name);
+		return "spider_cfg_help";
+	}
+	
 }
