@@ -74,10 +74,6 @@ class NewsSpider(scrapy.Spider):
             self.web_domain_list[0] += '/'
         pagelink_list = [self.web_domain_list[0]+link for link in pagelink_list]
         pagetitle_list = response.xpath(self.xp_page_title_list[0]).extract()
-        # 对网页链接的预处理，例如a href="xxxxtargetpage=http://xxx"的情况
-        for i in range(len(pagelink_list)):
-            if "http" in pagelink_list[i]:
-                pagelink_list[i] = pagelink_list[i][pagelink_list[i].index("http"):]
         print("当前获得的新闻链接列表:");
         print(pagelink_list);
         print("当前获得的新闻标题列表:");

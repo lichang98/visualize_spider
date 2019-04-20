@@ -17,14 +17,6 @@
 			<h2 class="text-primary">修改爬虫配置</h2>
 		</div>
 	</div>
-	<div class="alert alert-success alert-dismissable" style="display:none">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		配置修改成功!
-	</div>
-	<div class="alert alert-danger alert-dismissable" style="display:none">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		配置修改失败!
-	</div>
 	<!-- 爬虫配置表单 -->
 	<form class="form-horizontal" role="form" id="spider_config_form">
 		<div class="form-group">
@@ -79,7 +71,14 @@
 		</table>
 		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-offset-2" style="width:70%">提交修改</button>
 	</form>
-	
+	<div class="alert alert-success alert-dismissable col-sm-offset-2" style="display:none;width:60%">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		配置修改成功!&nbsp;&nbsp;&nbsp;&nbsp;3秒后跳转页面......
+	</div>
+	<div class="alert alert-danger alert-dismissable col-sm-offset-2" style="display:none;width:60%">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		配置修改失败!
+	</div>
 	<footer class="footer">
 		<div th:include="footer :: footer_panel"></div>
 	</footer>
@@ -156,7 +155,11 @@
 			}
 			console.log("获取的所有的配置参数为:"+config);
 			$.post("spider_change_cfg/update_cfg",{"config":JSON.stringify(config),"taskName":JSON.stringify("[[${taskName}]]")},function(){},"json");
-			window.location.href="/spider_supervise?user_name=[[${user_name}]]";
+			//window.location.href="/spider_supervise?user_name=[[${user_name}]]";
+			$(".alert-success").css("display","block");
+			setTimeout(function(){
+				window.location.href="/spider_supervise?user_name=[[${user_name}]]";
+			},3000);
 		});
 // 		$("#spider_config_submit_btn").on("click",function(){
 // 			console.log("表单提交操作");
