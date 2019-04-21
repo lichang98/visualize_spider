@@ -16,16 +16,16 @@ public class SpiderMissingInfo {
 	private boolean title;	//¸Ã×Ö¶Î´æÔÚ: true ,×Ö¶ÎÈ±Ê§: false
 	private boolean releaseTime;
 	private boolean content;
-	public SpiderMissingInfo() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 	public SpiderMissingInfo(String url, boolean title, boolean releaseTime, boolean content) {
 		super();
 		this.url = url;
 		this.title = title;
 		this.releaseTime = releaseTime;
 		this.content = content;
+	}
+	public SpiderMissingInfo() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 	public String getUrl() {
 		return url;

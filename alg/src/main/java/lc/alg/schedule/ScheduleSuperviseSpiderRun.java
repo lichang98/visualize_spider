@@ -102,7 +102,7 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 					reader = new BufferedReader(new FileReader(logFile));
 					String line=null;
 					while((line = reader.readLine()) != null) {
-						strBuffer.append(line+"\r\n");
+						strBuffer.append(new String(line.getBytes("GBK"),"UTF-8")+"\r\n");
 					}
 					reader.close();
 				} catch (IOException e) {
@@ -121,6 +121,8 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 				query = new Query(Criteria.where("taskName").is(taskName));
 				mongoTemplate.updateFirst(query, update, SpiderRunInfo.class);
 			}
+			spiderRunThread = null;
+			return;
 		}
 		// 获取当前爬虫的运行信息
 		Date date = new Date();

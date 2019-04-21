@@ -76,8 +76,7 @@ public class SpiderPageRestController {
 	public String restartSpider(@RequestParam String taskName) {
 		System.out.println("重启控制，taskName="+taskName);
 		//删除缺失值记录
-		mongoTemplate.findAllAndRemove(new Query(Criteria.where("title").is(true)), SpiderMissingInfo.class);
-		mongoTemplate.findAllAndRemove(new Query(Criteria.where("title").is(false)), SpiderMissingInfo.class);
+		mongoTemplate.dropCollection(SpiderMissingInfo.class);
 		//删除该任务的运行记录
 		mongoTemplate.updateFirst(new Query(Criteria.where("taskName").is(taskName)), new Update().set("memInfo", new ArrayList<Map<String,String>>()), SpiderRunInfo.class);
 		mongoTemplate.updateFirst(new Query(Criteria.where("taskName").is(taskName)), new Update().set("getCountInfo", new ArrayList<Map<String,String>>()), SpiderRunInfo.class);
