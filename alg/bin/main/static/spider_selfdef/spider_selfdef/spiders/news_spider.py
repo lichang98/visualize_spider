@@ -62,7 +62,8 @@ class NewsSpider(scrapy.Spider):
                 releaseTime: 新闻发布的时间
                 content: 新闻的内容主题
         用于获取必要数据的xpath 设置 解析规则为list, 包含对某个属性的不同解析方式，用以适配不同页面:
-            xp_page_title_list: 用于解析当前新闻列表标题的xpath规则，返回新闻标题列表
+            @deprecated:xp_page_title_list: 用于解析当前新闻列表标题的xpath规则，返回新闻标题列表
+            标题改为在新闻内容界面获得
             xp_page_url_list: 用于解析转到具体新闻内容的xpath 规则，返回url 链接
             xp_release_time: 用于解析新闻发布时间值的xpath 规则
             xp_content: 用于解析新闻主体内容的xpath规则，返回段落列表
@@ -72,16 +73,30 @@ class NewsSpider(scrapy.Spider):
         # 给每个页面链接加上网站域名，例如https://search.cctv.com/+"?...."
         if self.web_domain_list[0][-1] != '/':
             self.web_domain_list[0] += '/'
-        pagelink_list = [self.web_domain_list[0]+link for link in pagelink_list]
-        pagetitle_list = response.xpath(self.xp_page_title_list[0]).extract()
+        # 对网页链接的预处理，例如a href="xxxxtargetpage=http://xxx"的情况
+        for i in range(len(pagelink_list)):
+            if pagelink_list[i].index("http") == -1:
+                pagelink_list[i] = self.web_domain_list[0]+pagelink_list[i]
+            else:
+                if pagelink_list[i].index("html") !=-1:
+                    pagelink_list[i]=pagelink_list[i][pagelink_list[i].
+                                  index("http"):pagelink_list[i].index('html')+4]
+                elif pagelink_list[i].index('htm') !=-1:
+                    pagelink_list[i]=pagelink_list[i][pagelink_list[i].
+                                  index('http'):pagelink_list[i].index('htm')+3]
+                else:
+                    pagelink_list[i]=pagelink_list[i][pagelink_list[i].
+                                  index("http"):]
+        # pagelink_list = [self.web_domain_list[0]+link for link in pagelink_list]
+#        pagetitle_list = response.xpath(self.xp_page_title_list[0]).extract()
         print("当前获得的新闻链接列表:");
         print(pagelink_list);
-        print("当前获得的新闻标题列表:");
-        print(pagetitle_list);
+#        print("当前获得的新闻标题列表:");
+#        print(pagetitle_list);
         # 处理获取到的每个网页链接
         for i in range(len(pagelink_list)):
-            yield scrapy.Request(pagelink_list[i],meta={'url':pagelink_list[i],
-                                 'title': pagetitle_list[i]})
+            yield scrapy.Request(pagelink_list[i],meta={'url':pagelink_list[i]},
+                                 callback=self.page_parse)
         # 获取下一个页面列表的链接
         next_pagelist_link = response.xpath(self.xp_nextpage[0]).extract()[0]
         print("下一个页面列表的链接:"+self.web_domain_list[0]+next_pagelist_link);
@@ -96,9 +111,12 @@ class NewsSpider(scrapy.Spider):
         第二层页面解析器
         解析新闻的内容界面， 获得新闻的发布时间以及主体内容
         """
-        ld = ItemLoader(item=SpiderSelfdefItem,response=response)
+        ld = ItemLoader(item=SpiderSelfdefItem(),response=response)
         ld.add_value('url',response.meta['url'])
-        ld.add_value('title',response.meta['title'])
+        # ld.add_value('title',response.meta['title'])
+        # 标题的获取改为在新闻内容界面
+        for xp_title in self.xp_page_title_list:
+            ld.add_xpath('title',xp_title)
         for xp_releasetime in self.xp_release_time:
             ld.add_xpath('releaseTime',xp_releasetime)
         for xp_cont in self.xp_content:

@@ -134,3 +134,4 @@ MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_DBNAME = 'spider_news'
 MONGODB_TABLE = 'news_docs'
+MONGODB_TABLE_MISSING = 'spider_missing_info'

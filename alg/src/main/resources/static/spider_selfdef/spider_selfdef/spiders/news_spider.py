@@ -14,10 +14,10 @@ class NewsSpider(scrapy.Spider):
     name="news_spider" # 爬虫的名称
     mongo_client = pymongo.MongoClient('mongodb://127.0.0.1:27017/')
     spider_config_col = mongo_client['spider_news']['spider_config'] # mongodb 爬虫配置集合
-    # 查询当前状态为pending 的爬虫, 选择一个启动
+    # 查询当前状态为running 的爬虫, 选择一个启动
     for spider_config in spider_config_col.find():
-        if spider_config['curStatus'] == 'pending':
-            pending_spider = spider_config
+        if spider_config['curStatus'] == 'running':
+            running_spider = spider_config
             break
     web_domain_list=[]
     org_domain_list=[]
@@ -26,8 +26,8 @@ class NewsSpider(scrapy.Spider):
     xp_release_time=[]
     xp_content=[]
     xp_nextpage=[]
-    for item in pending_spider["attributeParser"]:
-        print("in news_spider.py: pending_spider item: " + str(item));
+    for item in running_spider["attributeParser"]:
+        print("in news_spider.py: running_spider item: " + str(item));
         item = dict(item)
         for key,val in item.items():
             if key == 'web_domain': # 当前网站的domain 例如: https://search.cctv.com
