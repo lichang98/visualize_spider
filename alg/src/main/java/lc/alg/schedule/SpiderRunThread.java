@@ -13,11 +13,13 @@ public class SpiderRunThread extends Thread{
 	
 	private String[] cmds;		//当前线程执行的命令
 	private boolean stopped;	//在停止爬虫线程后，设置该标志位为true 
+	private boolean finish;
 	
 	public SpiderRunThread(String[] cmds) {
 		super();
 		this.cmds = cmds;
-		this.stopped=false;
+		this.stopped=true;
+		this.finish=false;
 	}
 	
 	
@@ -33,6 +35,17 @@ public class SpiderRunThread extends Thread{
 	}
 
 
+	public boolean isFinish() {
+		return finish;
+	}
+
+
+
+	public void setFinish(boolean finish) {
+		this.finish = finish;
+	}
+
+
 
 	@Override
 	public void run() {
@@ -41,6 +54,7 @@ public class SpiderRunThread extends Thread{
 		try {
 			pro = Runtime.getRuntime().exec(cmds);
 			pro.waitFor();
+			this.finish=true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
