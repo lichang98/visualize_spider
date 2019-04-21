@@ -52,7 +52,7 @@ public class SpiderPageController {
 		spiderConfigInfo.setCurStatus("running");	// 设置当前状态为running
 		mongoTemplate.save(spiderConfigInfo, "spider_config");
 		//删除missing_info 中的所有记录
-		mongoTemplate.remove(SpiderMissingInfo.class);
+		mongoTemplate.dropCollection(SpiderMissingInfo.class);
 		return "new_spider";
 	}
 	

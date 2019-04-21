@@ -102,7 +102,7 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 					reader = new BufferedReader(new FileReader(logFile));
 					String line=null;
 					while((line = reader.readLine()) != null) {
-						strBuffer.append(new String(line.getBytes("GBK"),"UTF-8")+"\r\n");
+						strBuffer.append(new String(line.getBytes("UTF-8"),"UTF-8")+"\r\n");
 					}
 					reader.close();
 				} catch (IOException e) {

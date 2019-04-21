@@ -29,6 +29,11 @@
 		<div class="panel-body" id="curr_run_spiders">
 		</div>
 	</div>
+	<div class="progress progress-striped active col-sm-offset-2" id="log_loading" style="display:none;width:40%">
+		<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+			<span class="sr-only">日志文件加载中......</span>					
+		</div>
+	</div>
 	<!-- tab页面 -->
 	<ul id="spider_run_tab" class="nav nav-tabs col-sm-offset-1" style="width:90%">
 		<li class="active">
@@ -131,8 +136,6 @@
 					var title_isexist = data[i]["title"];
 					var releaseTime_isexist = data[i]["releaseTime"];
 					var content_isexist = data[i]["content"];
-					console.log("添加到缺失字段表格的数据: " + url+", " + title_isexist+", "+
-							releaseTime_isexist+", " + content_isexist);
 					//添加到表格中
 					var title_class="";
 					var releaseTime_class="";
@@ -196,7 +199,7 @@
 					backgroundColor:"rgba(0,0,0,0.8)",
 					tooltip:{
 						trigger:"item",
-						formatter:"{a}<br/>{b} : {c}%"
+						formatter:"{a}<br/>{b} : {c}"
 					},
 					xAxis:{
 						type:'category',
@@ -315,7 +318,7 @@
 			var dataX = getCountInfoX;
 			var dataY = getCountInfoY;
 			for(var i=0;i<dataX.length;i++){
-				dataZ.push(1000);
+				dataZ.push(300);
 			}
 			var option={
 					title:{
@@ -336,7 +339,7 @@
 					backgroundColor:"rgba(0,0,0,0.8)",
 					tooltip:{
 						trigger:"item",
-						formatter:"{a}<br/>{b} : {c}%"
+						formatter:"{a}<br/>{b} : {c}"
 					},
 					xAxis:{
 						type:'category',
@@ -447,8 +450,13 @@
 		});
 		
 		$("#link_spider_runlog").click(function(){
-			console.log("爬虫日志tab 点击, runlog内容:" + runlog);
-			$("#spider_runlog>pre").text(runlog);
+			$("#log_loading").css("display","block");
+ 			setTimeout(function(){
+ 				$("#spider_runlog>pre").text(runlog);
+ 			},0);
+			setTimeout(function(){
+				$("#log_loading").css("display","none");
+			},3000);
 		});
 		
 		//添加爬虫列表点击监听，根据点击的任务名称，ajax 异步更新下方信息
@@ -461,10 +469,10 @@
 			for(var i=0;i<$(this).parent().children().length;i++){
 				console.log($(this).parent().children(":nth-child("+i+")").text().substr(0,4));
 				if($(this).parent().children(":nth-child("+i+")").text().substr(0,4) === "任务名称"){
-					$(this).parent().children(":nth-child("+i+")").attr("class","list-group-item col-sm-9");	
+					$(this).parent().children(":nth-child("+i+")").attr("class","list-group-item col-sm-6");	
 				}
 			}
-			$(this).attr("class","list-group-item active col-sm-9");
+			$(this).attr("class","list-group-item active col-sm-6");
 			//ajax 请求该任务的信息
 			$.ajax({
 				async:false,
