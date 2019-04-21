@@ -32,36 +32,19 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 	 * @throws InterruptedException 
 	 */
 	public void runShellScript(String[] cmds) throws IOException, InterruptedException {
-//		Process pro = Runtime.getRuntime().exec(cmds);
-//		pro.waitFor();
-//		InputStream in = pro.getInputStream();
-//		BufferedReader read = new BufferedReader(new InputStreamReader(in));
-//		String line = null;
-//		StringBuffer messages = new StringBuffer();
-//		while((line = read.readLine()) != null) {
-//			//System.out.println(new String(line.getBytes("GBK"),"UTF-8"));
-//			line = new String(line.getBytes("GBK"),"UTF-8");
-//			System.out.println(line);
-//			messages.append(line);
-//		}
-//		System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
-		ProcessBuilder processBuilder = new ProcessBuilder(cmds);
-		processBuilder.redirectErrorStream(true);	//重定向错误输出
-		Process p = processBuilder.start();
-		InputStream is = p.getInputStream();
-		BufferedReader br =  new BufferedReader(new InputStreamReader(is));
-		p.waitFor();
-		if(p.exitValue() !=0) {
-			System.out.println("程序错误退出!!");
-		}else {
-			String line=null;
-			StringBuffer strBuf = new StringBuffer();
-			while((line = br.readLine()) != null) {
-				System.out.println(new String(line.getBytes("GBK"),"UTF-8"));
-				strBuf.append(line);
-			}
-			System.out.println("******ALL OUTPUT FINISH******");
+		Process pro = Runtime.getRuntime().exec(cmds);
+		pro.waitFor();
+		InputStream in = pro.getInputStream();
+		BufferedReader read = new BufferedReader(new InputStreamReader(in));
+		String line = null;
+		StringBuffer messages = new StringBuffer();
+		while((line = read.readLine()) != null) {
+			//System.out.println(new String(line.getBytes("GBK"),"UTF-8"));
+			line = new String(line.getBytes("GBK"),"UTF-8");
+			System.out.println(line);
+			messages.append(line);
 		}
+		System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
 	}
 	
 
