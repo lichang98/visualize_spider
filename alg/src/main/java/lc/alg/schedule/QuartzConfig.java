@@ -27,7 +27,7 @@ public class QuartzConfig {
 	@Bean
 	public Trigger quertzTrigger() {
 		SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
-				.withIntervalInMinutes(30)		//定时任务30分钟间隔
+				.withIntervalInMinutes(10)		//定时任务10分钟间隔
 				.repeatForever();
 		return TriggerBuilder.newTrigger().forJob(quartzDetail())
 				.withIdentity("spider_run_supervise")

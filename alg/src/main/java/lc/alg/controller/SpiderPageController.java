@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 
 import lc.alg.entity.SpiderConfigForm;
 import lc.alg.entity.SpiderConfigInfo;
+import lc.alg.entity.SpiderMissingInfo;
 import lc.alg.entity.User;
 
 /**
@@ -50,6 +51,8 @@ public class SpiderPageController {
 		SpiderConfigInfo spiderConfigInfo = spiderConfigForm.getSpiderConfigInfo();
 		spiderConfigInfo.setCurStatus("running");	// 设置当前状态为running
 		mongoTemplate.save(spiderConfigInfo, "spider_config");
+		//删除missing_info 中的所有记录
+		mongoTemplate.remove(SpiderMissingInfo.class);
 		return "new_spider";
 	}
 	

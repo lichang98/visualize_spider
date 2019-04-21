@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 
 import lc.alg.entity.SpiderConfigInfo;
+import lc.alg.entity.SpiderMissingInfo;
 import lc.alg.entity.SpiderRunInfo;
 
 /**
@@ -97,5 +98,11 @@ public class SpiderPageRestController {
 		Update update = new Update().set("attributeParser",attributeParser);
 		mongoTemplate.updateFirst(query, update, SpiderConfigInfo.class);
 		return "";
+	}
+	
+	@RequestMapping("/spider_supervise/get_missinginfo")
+	public String getMissingInfos() {
+		List<SpiderMissingInfo> missingInfoList = mongoTemplate.findAll(SpiderMissingInfo.class);
+		return new Gson().toJson(missingInfoList);
 	}
 }

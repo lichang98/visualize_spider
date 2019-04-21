@@ -40,6 +40,9 @@
 		<li>
 			<a id="link_spider_runlog" href="#spider_runlog" data-toggle="tab">爬虫运行日志</a>
 		</li>
+		<li>
+			<a id="link_spider_missinginfo" href="#spider_missinginfo" data-toggle="tab">字段缺失记录</a>
+		</li>
 	</ul>
 	<div id="spider_tab_content" class="tab-content" style="width:90%;margin-bottom:50px">
 		<div class="tab-pane fade in active" id="spider_meminfo" style="width:80%;margin:20px;height:400px;top:5%;left:10%;bottom:10%;border:3px solid #ADD8E6">
@@ -53,6 +56,21 @@
 		<div class="tab-pane fade pre-scrollable col-sm-offset-1" id="spider_runlog">
 			<!-- 运行日志文件显示 -->
 			<pre></pre>
+		</div>
+		<div class="tab-pane fade col-sm-offset-1" id="spider_missinginfo">
+			<!-- 爬虫运行中出现缺失字段的记录 -->
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>网址</th>
+						<th>标题</th>
+						<th>发布时间</th>
+						<th>内容</th>
+					</tr>
+				</thead>
+				<tbody id="spider_missinginfo_tbody">
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<footer class="footer">
@@ -84,6 +102,49 @@
 			var user_name = "[[${user_name}]]";
 			var taskName = $(this).attr("id").split("_")[0];
 			window.location.href="/spider_change_cfg?user_name="+user_name+"&taskName="+taskName;
+		});
+		
+		//查看爬虫新闻缺失值列表信息
+		$("#link_spider_missinginfo").click(function(){
+			$.get("/spider_supervise/get_missinginfo",function(data){
+				console.log("接收missing info:" + JSON.stringify(data));
+				for(var i=0;i<data.length;i++){
+					var url = data[i]["url"];
+					var title_isexist = data[i]["title"];
+					var releaseTime_isexist = data[i]["releaseTime"];
+					var content_isexist = data[i]["content"];
+					console.log("添加到缺失字段表格的数据: " + url+", " + title_isexist+", "+
+							releaseTime_isexist+", " + content_isexist);
+					//添加到表格中
+					var title_class="";
+					var releaseTime_class="";
+					var content_class="";
+					if(title_isexist){
+						title_isexist="字段存在";
+						title_class="text-success";
+					}else{
+						title_isexist="字段缺失";
+						title_class="text-danger";
+					}
+					if(releaseTime_isexist){
+						releaseTime_isexist="字段存在";
+						releaseTime_class="text-success";
+					}else{
+						releaseTime_isexist="字段缺失";
+						releaseTime_class="text-danger";
+					}
+					if(content_isexist){
+						content_isexist="字段存在";
+						content_class="text-success";
+					}else{
+						content_isexist="字段缺失";
+						content_class="text-danger";
+					}
+					$("#spider_missinginfo_tbody").append("<tr><td>"+url+"</td><td class="+title_class+">"+title_isexist+
+							"</td><td class="+releaseTime_class+">"+releaseTime_isexist+"</td><td class="+content_class+">"+content_isexist+"</td></tr>");
+				}
+				
+			},'json');
 		});
 		
 		$("#link_spider_meminfo").click(function(){
@@ -240,7 +301,7 @@
 			}
 			var option={
 					title:{
-						text:"每半小时获取的新闻文本数量",
+						text:"每10分钟获取的新闻文本数量",
 						left:"10%",
 						textStyle:{
 							color:"#fff",

@@ -9,12 +9,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+
+import lc.alg.entity.NewsDocs;
+import lc.alg.entity.SpiderConfigInfo;
+import lc.alg.entity.SpiderRunInfo;
 
 /**
  * @author 李畅
@@ -25,41 +38,45 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
-	/**
-	 *  java 执行系统命令
-	 * @param cmd
-	 * @throws IOException 
-	 * @throws InterruptedException 
-	 */
-	public void runShellScript(String[] cmds) throws IOException, InterruptedException {
-		Process pro = Runtime.getRuntime().exec(cmds);
-		pro.waitFor();
-		InputStream in = pro.getInputStream();
-		BufferedReader read = new BufferedReader(new InputStreamReader(in));
-		String line = null;
-		StringBuffer messages = new StringBuffer();
-		while((line = read.readLine()) != null) {
-			//System.out.println(new String(line.getBytes("GBK"),"UTF-8"));
-			line = new String(line.getBytes("GBK"),"UTF-8");
-			System.out.println(line);
-			messages.append(line);
-		}
-		System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
-	}
+	public static SpiderRunThread spiderRunThread=null;
+	
+//	/**
+//	 *  java 执行系统命令
+//	 * @param cmd
+//	 * @throws IOException 
+//	 * @throws InterruptedException 
+//	 */
+//	public void runShellScript(String[] cmds) throws IOException, InterruptedException {
+//		Process pro = Runtime.getRuntime().exec(cmds);
+//		pro.waitFor();
+////		InputStream in = pro.getInputStream();
+////		BufferedReader read = new BufferedReader(new InputStreamReader(in));
+////		String line = null;
+////		StringBuffer messages = new StringBuffer();
+////		while((line = read.readLine()) != null) {
+////			//System.out.println(new String(line.getBytes("GBK"),"UTF-8"));
+////			line = new String(line.getBytes("GBK"),"UTF-8");
+////			System.out.println(line);
+////			messages.append(line);
+////		}
+//		System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
+//	}
 	
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
 		System.out.println("定时任务.................");
-		Path path = Paths.get(System.getProperty("user.dir"),"src","main","resources","static","spider_selfdef","autorun.bat");
-		String pathStr = path.toString();
-		String[] cmds = {pathStr};
-		try {
-			runShellScript(cmds);
-		} catch (IOException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		if(spiderRunThread == null) {
+//			Path path = Paths.get(System.getProperty("user.dir"),"src","main","resources","static","spider_selfdef","autorun.bat");
+//			String pathStr = path.toString();
+//			String[] cmds = {pathStr};
+//			spiderRunThread = new SpiderRunThread(cmds);
+//		}
+//		//在线程中启动爬虫任务，并设置为static 成员，在新闻数量不在增长（爬虫结束）时interrupt终止
+//		if(!spiderRunThread.isAlive() && !spiderRunThread.isStopped()) {
+//			spiderRunThread.start();
+//		}
+//		// 获取当前爬虫的运行信息
 //		Date date = new Date();
 //		SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 //		String dateStr = dateFormat.format(date);
