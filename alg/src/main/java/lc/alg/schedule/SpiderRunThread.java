@@ -54,7 +54,6 @@ public class SpiderRunThread extends Thread{
 		try {
 			pro = Runtime.getRuntime().exec(cmds);
 			pro.waitFor();
-			this.finish=true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,6 +61,9 @@ public class SpiderRunThread extends Thread{
 			// TODO Auto-generated catch block
 			System.out.println("≈¿≥ÊΩ≈±æœﬂ≥Ã÷’÷π!!!");
 			e.printStackTrace();
+		}finally {
+			System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
+			this.finish=true;
 		}
 //		InputStream in = pro.getInputStream();
 //		BufferedReader read = new BufferedReader(new InputStreamReader(in));
@@ -73,6 +75,6 @@ public class SpiderRunThread extends Thread{
 //			System.out.println(line);
 //			messages.append(line);
 //		}
-		System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
+//		System.out.println("**********ALL MESSAGE OUTPUT FINISH************");
 	}
 }

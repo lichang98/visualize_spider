@@ -20,7 +20,7 @@
 		</div>
 	</div>
 	<!-- 当前运行的爬虫列表 -->
-	<div class="panel panel-primary col-sm-offset-1" style="width:60%">
+	<div class="panel panel-primary col-sm-offset-1" style="width:80%">
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				当前运行的爬虫列表
@@ -57,7 +57,7 @@
 			<!-- 运行日志文件显示 -->
 			<pre></pre>
 		</div>
-		<div class="tab-pane fade col-sm-offset-1" id="spider_missinginfo">
+		<div class="tab-pane fade col-sm-offset-1 pre_scrollable" id="spider_missinginfo">
 			<!-- 爬虫运行中出现缺失字段的记录 -->
 			<table class="table table-hover">
 				<thead>
@@ -89,9 +89,27 @@
 		$.get("/spider_supervise/get_curr_spiders",function(data,status,xhr){
 			//添加爬虫列表
 			for(var i=0;(2*i+1)<data.length;i++){
-				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-9'>任务名称: "+data[i*2]+"<span class='badge'>:"+data[2*i+1]+"</span></a><input class='col-sm-1' style='visibility:hidden'> <button id="+data[i*2]+"_btn_cg type='button' class='btn btn-success col-sm-2'>修改配置</button>");
+				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-6'>任务名称: "+
+						data[i*2]+"<span class='badge'>:"+data[2*i+1]+"</span></a><input class='col-sm-1' "+
+							"style='visibility:hidden'> <button id="+data[i*2]+"_btn_cg type='button' "+
+								"class='btn btn-success col-sm-2'>修改配置</button><input class='col-sm-1' style='visibility:hidden'><button id='"+data[2*i]+"_btn_restart' type='button' class='btn btn-danger col-sm-2'>重新启动</button>");
+				$("#curr_run_spiders").append("<input class='col-sm-12' style='visibility:hidden;height:5px'>");
+				if(data[2*i+1] === 'running'){
+					$("#"+data[i*2]+"_btn_restart").attr("disabled",true);
+				}
 			}
 		}, 'json');
+		
+		//重启
+		$('body').on("click",".btn-danger",function(){
+			$.ajaxSetup({async:false});
+			console.log("重启任务名称:"+$(this).attr("id").split("_")[0]);
+			$.post("/spider_supervise/restart_spider",{"taskName":$(this).attr("id").split("_")[0]},function(){
+			},'json');
+			setTimeout(function(){
+				window.location.href="/spider_supervise?user_name=[[${user_name}]]";
+			},1000);
+		});
 		
 		//修改配置按钮的点击事件
 		$("body").on("click",".btn-success",function(){

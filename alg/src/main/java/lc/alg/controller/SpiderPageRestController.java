@@ -66,6 +66,28 @@ public class SpiderPageRestController {
 		return new Gson().toJson(spiderRunInfo);
 	}
 	
+	/**
+	 * 
+	 * 重启爬虫程序
+	 * @param taskName
+	 * @return
+	 */
+	@RequestMapping("/spider_supervise/restart_spider")
+	public String restartSpider(@RequestParam String taskName) {
+		System.out.println("重启控制，taskName="+taskName);
+		//删除缺失值记录
+		mongoTemplate.findAllAndRemove(new Query(Criteria.where("title").is(true)), SpiderMissingInfo.class);
+		mongoTemplate.findAllAndRemove(new Query(Criteria.where("title").is(false)), SpiderMissingInfo.class);
+		//删除该任务的运行记录
+		mongoTemplate.updateFirst(new Query(Criteria.where("taskName").is(taskName)), new Update().set("memInfo", new ArrayList<Map<String,String>>()), SpiderRunInfo.class);
+		mongoTemplate.updateFirst(new Query(Criteria.where("taskName").is(taskName)), new Update().set("getCountInfo", new ArrayList<Map<String,String>>()), SpiderRunInfo.class);
+		mongoTemplate.updateFirst(new Query(Criteria.where("taskName").is(taskName)), new Update().set("runlog", ""), SpiderRunInfo.class);
+		//修改当前任务的状态为running
+		mongoTemplate.updateFirst(new Query(Criteria.where("taskName").is(taskName)),
+				new Update().set("curStatus", "running"), SpiderConfigInfo.class);
+		return "";
+	}
+	
 	@RequestMapping("/spider_change_cfg/get_spiderinfo_by_taskName")
 	public String getSpiderInfoByTaskname(@RequestParam String taskName) {
 		System.out.println("in getSpiderInfoByTaskname, taskName="+taskName);
