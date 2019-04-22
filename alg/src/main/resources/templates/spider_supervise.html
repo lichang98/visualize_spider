@@ -29,6 +29,11 @@
 		<div class="panel-body" id="curr_run_spiders">
 		</div>
 	</div>
+	<!-- 提示框 -->
+	<div class="alert alert-success alert-dismissable" id="operation_alert">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		任务删除成功!&nbsp;&nbsp;&nbsp;5秒后刷新页面......
+	</div>
 	<div class="progress progress-striped active col-sm-offset-2" id="log_loading" style="display:none;width:40%">
 		<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:40%">
 			<span class="sr-only">日志文件加载中......</span>					
@@ -90,17 +95,19 @@
 		var getCountInfoY=new Array();
 		var runlog=new String();
 		
+		$("#operation_alert").hide(1);
 		//在加载完界面后，从后台获取爬虫列表
 		$.get("/spider_supervise/get_curr_spiders",function(data,status,xhr){
 			//添加爬虫列表
 			for(var i=0;(2*i+1)<data.length;i++){
-				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-6'>任务名称: "+
+				$("#curr_run_spiders").append("<a href='#' class='list-group-item col-sm-3'>任务名称: "+
 						data[i*2]+"<span class='badge'>:"+data[2*i+1]+"</span></a><input class='col-sm-1' "+
 							"style='visibility:hidden'> <button id="+data[i*2]+"_btn_cg type='button' "+
-								"class='btn btn-success col-sm-2'>修改配置</button><input class='col-sm-1' style='visibility:hidden'><button id='"+data[2*i]+"_btn_restart' type='button' class='btn btn-danger col-sm-2'>重新启动</button>");
+								"class='btn btn-success col-sm-2'>修改配置</button><input class='col-sm-1' style='visibility:hidden'><button id='"+data[2*i]+"_btn_restart' type='button' class='btn btn-danger col-sm-2'>重新启动</button><input class='col-sm-1' style='visibility:hidden'><button id='"+data[2*i]+"_btn_deltask' type='button' class='col-sm-2 btn btn-warning'>删除该任务</button>");
 				$("#curr_run_spiders").append("<input class='col-sm-12' style='visibility:hidden;height:5px'>");
 				if(data[2*i+1] === 'running'){
 					$("#"+data[i*2]+"_btn_restart").attr("disabled",true);
+					$("#"+data[i*2]+"_btn_deltask").attr("disabled",true);
 				}
 			}
 		}, 'json');
@@ -111,9 +118,22 @@
 			console.log("重启任务名称:"+$(this).attr("id").split("_")[0]);
 			$.post("/spider_supervise/restart_spider",{"taskName":$(this).attr("id").split("_")[0]},function(){
 			},'json');
+			$("#operation_alert").show("fast");
 			setTimeout(function(){
 				window.location.href="/spider_supervise?user_name=[[${user_name}]]";
-			},1000);
+			},5000);
+		});
+		
+		//爬虫任务删除
+		$("body").on("click",".btn-warning",function(){
+			$.ajaxSetup({async:false});
+			console.log("删除任务名称:"+$(this).attr("id").split("_")[0]);
+			$.post("/spider_supervise/del_spider",{"taskName":$(this).attr("id").split("_")[0]},function(){
+			},"json");
+			$("#operation_alert").show("fast");
+			setTimeout(function(){
+				window.location.href="/spider_supervise?user_name=[[${user_name}]]";
+			},5000);
 		});
 		
 		//修改配置按钮的点击事件

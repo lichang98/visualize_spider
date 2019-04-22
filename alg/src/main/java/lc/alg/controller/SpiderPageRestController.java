@@ -87,6 +87,20 @@ public class SpiderPageRestController {
 		return "";
 	}
 	
+	/**
+	 * 删除爬虫任务
+	 * @param taskName
+	 * @return
+	 */
+	@RequestMapping("/spider_supervise/del_spider")
+	public String delSpider(@RequestParam String taskName) {
+		System.out.println("爬虫任务删除控制");
+		//删除spider_config 以及spiderrun_info 中该任务的记录
+		mongoTemplate.remove(new Query(Criteria.where("taskName").is(taskName)), "spider_config");
+		mongoTemplate.remove(new Query(Criteria.where("taskName").is(taskName)), "spiderrun_info");
+		return "";
+	}
+	
 	@RequestMapping("/spider_change_cfg/get_spiderinfo_by_taskName")
 	public String getSpiderInfoByTaskname(@RequestParam String taskName) {
 		System.out.println("in getSpiderInfoByTaskname, taskName="+taskName);
