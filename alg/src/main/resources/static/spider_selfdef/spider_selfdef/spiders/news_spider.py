@@ -10,6 +10,10 @@ from scrapy.loader import ItemLoader
 from spider_selfdef.items import SpiderSelfdefItem
 import pymongo
 
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError
+
 class NewsSpider(scrapy.Spider):
     name="news_spider" # 爬虫的名称
     mongo_client = pymongo.MongoClient('mongodb://127.0.0.1:27017/')
@@ -96,13 +100,12 @@ class NewsSpider(scrapy.Spider):
         # 处理获取到的每个网页链接
         for i in range(len(pagelink_list)):
             yield scrapy.Request(pagelink_list[i],meta={'url':pagelink_list[i]},
-                                 callback=self.page_parse)
-        # 获取下一个页面列表的链接
+                                 callback=self.page_parse,errback=self.errback)
         next_pagelist_link = response.xpath(self.xp_nextpage[0]).extract()[0]
         print("下一个页面列表的链接:"+self.web_domain_list[0]+next_pagelist_link);
         if next_pagelist_link:
             yield scrapy.Request(self.web_domain_list[0] + next_pagelist_link,
-                                 callback=self.parse)
+                                 callback=self.parse,errback=self.errback)
         return None
     
     
@@ -122,3 +125,20 @@ class NewsSpider(scrapy.Spider):
         for xp_cont in self.xp_content:
             ld.add_xpath('content',xp_cont)
         return ld.load_item()
+    
+    
+    def errback(self,failure):
+        """
+        dns, http errors 回调函数
+        """
+        self.logger.error(repr(failure))
+        if failure.check(HttpError):
+            response = failure.value.response
+            self.logger.error("httpError on %s", response.url)
+        elif failure.check(DNSLookupError):
+            request=failure.request
+            self.logger.error("DNSLookupError on %s",request.url)
+        elif failure.check(TimeoutError):
+            request=failure.request
+            self.logger.error("TimeoutError on %s",request.url)
+        pass
