@@ -4,10 +4,12 @@
 <meta charset="UTF-8">
 <!-- 新 Bootstrap 核心 CSS 文件 -->
 <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css" />
 <!-- jQuery文件 -->
 <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.js"></script>
 <title>新闻数据总览</title>
 </head>
 <body>
@@ -17,9 +19,55 @@
 			<h2 class="text-primary">新闻数据总览</h2>
 		</div>
 	</div>
-
+	<button id="btn_show_modal" style="display:none" data-toggle="modal" data-target="#myModal"></button>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="myModalLabel">
+						数据加载中......
+					</h4>
+				</div>
+				<div class="modal-footer">
+					<button id="myModal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭
+					</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<!-- 显示新闻数据的表格 -->
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>网址</th>
+				<th>标题</th>
+				<th>发布时间</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody id="newsdata_tbody">
+		</tbody>
+	</table>
+	<!-- 分页按钮  -->
+	<div class="nav-box col-sm-offset-2">
+		<ul class="pagination" id="page_ind"></ul>
+	</div>
+	<!-- 页脚 -->
 	<footer class="footer">
 		<div th:include="footer :: footer_panel"></div>
 	</footer>
 </body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajaxSetup({async:false});
+		$("#btn_show_modal").click();
+		$.get("/news_view/get_news",function(data){
+			console.log("接收到新闻数据...");
+		});
+		$("#myModal_close").click();
+	});
+</script>
 </html>

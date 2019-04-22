@@ -10,14 +10,18 @@ from scrapy.loader import ItemLoader
 from spider_selfdef.items import SpiderSelfdefItem
 import pymongo
 
+from scrapy.spidermiddlewares.httperror import HttpError
+from twisted.internet.error import DNSLookupError
+from twisted.internet.error import TimeoutError
+
 class NewsSpider(scrapy.Spider):
     name="news_spider" # 爬虫的名称
     mongo_client = pymongo.MongoClient('mongodb://127.0.0.1:27017/')
     spider_config_col = mongo_client['spider_news']['spider_config'] # mongodb 爬虫配置集合
-    # 查询当前状态为pending 的爬虫, 选择一个启动
+    # 查询当前状态为running 的爬虫, 选择一个启动
     for spider_config in spider_config_col.find():
-        if spider_config['curStatus'] == 'pending':
-            pending_spider = spider_config
+        if spider_config['curStatus'] == 'running':
+            running_spider = spider_config
             break
     web_domain_list=[]
     org_domain_list=[]
@@ -26,8 +30,8 @@ class NewsSpider(scrapy.Spider):
     xp_release_time=[]
     xp_content=[]
     xp_nextpage=[]
-    for item in pending_spider["attributeParser"]:
-        print("in news_spider.py: pending_spider item: " + str(item));
+    for item in running_spider["attributeParser"]:
+        print("in news_spider.py: running_spider item: " + str(item));
         item = dict(item)
         for key,val in item.items():
             if key == 'web_domain': # 当前网站的domain 例如: https://search.cctv.com
@@ -96,13 +100,12 @@ class NewsSpider(scrapy.Spider):
         # 处理获取到的每个网页链接
         for i in range(len(pagelink_list)):
             yield scrapy.Request(pagelink_list[i],meta={'url':pagelink_list[i]},
-                                 callback=self.page_parse)
-        # 获取下一个页面列表的链接
+                                 callback=self.page_parse,errback=self.errback)
         next_pagelist_link = response.xpath(self.xp_nextpage[0]).extract()[0]
         print("下一个页面列表的链接:"+self.web_domain_list[0]+next_pagelist_link);
         if next_pagelist_link:
             yield scrapy.Request(self.web_domain_list[0] + next_pagelist_link,
-                                 callback=self.parse)
+                                 callback=self.parse,errback=self.errback)
         return None
     
     
@@ -122,3 +125,20 @@ class NewsSpider(scrapy.Spider):
         for xp_cont in self.xp_content:
             ld.add_xpath('content',xp_cont)
         return ld.load_item()
+    
+    
+    def errback(self,failure):
+        """
+        dns, http errors 回调函数
+        """
+        self.logger.error(repr(failure))
+        if failure.check(HttpError):
+            response = failure.value.response
+            self.logger.error("httpError on %s", response.url)
+        elif failure.check(DNSLookupError):
+            request=failure.request
+            self.logger.error("DNSLookupError on %s",request.url)
+        elif failure.check(TimeoutError):
+            request=failure.request
+            self.logger.error("TimeoutError on %s",request.url)
+        pass
