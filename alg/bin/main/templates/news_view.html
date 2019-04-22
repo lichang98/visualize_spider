@@ -114,15 +114,32 @@
 				//动态填充表格中的单元格与数据
 				for(var i=0;i<data_ind_range.length;++i){
 					var data_ind = data_ind_range[i];
-					$("#newsdata_tbody").append("<tr><td><span class='text-primary'><a href='"+news_datas[data_ind]["url"]+"' target='_blank'>"+news_datas[data_ind]["url"]+"</a></span></td><td>"+news_datas[data_ind]["title"]+"</td><td>"+news_datas[data_ind]["releaseTime"]+"</td><td><button id='"+data_ind+"_view_news' type='button' class='btn btn-link'>查看</button></td></tr>");
+					$("#newsdata_tbody").append("<tr><td><span class='text-primary'><a href='"+news_datas[data_ind]["url"]+"' target='_blank'>"+news_datas[data_ind]["url"]+
+							"</a></span></td><td>"+news_datas[data_ind]["title"]+"</td><td>"+news_datas[data_ind]["releaseTime"]+
+							"</td><td><button id='"+data_ind+"_view_news' type='button' class='btn btn-link'>查看</button><input style='visibility:hidden;width:5px'>"
+								+"<button title='删除成功! 3秒后自动刷新页面' data-container='#newsdata_tbody' data-toggle='popover' data-placement='right' class='btn btn-danger' id='"+news_datas[data_ind]["url"]+"_del_news'>删除</button></td></tr>");
 				}
+				$(".btn-danger").popover();
 			}
+		});
+		
+		//新闻删除按钮点击事件
+		$("body").on("click",".btn-danger",function(){
+			console.log("当前删除新闻的Url="+$(this).attr("id").split("_")[0]);
+			$.post("/news_view/del_news",{"url":$(this).attr("id").split("_")[0]},function(data){
+				//刷新当前页面
+				console.log("post 请求回应:"+data);
+				console.log("即将刷新界面");
+				setTimeout(function(){
+					window.location.href="/news_view?user_name=[[${user_name}]]";
+				},3000);
+			},"json");
 		});
 		
 		//查看新闻内容点击事件
 		$("body").on("click",".btn-link",function(){
 			var clipboard = new ClipboardJS(".btn-info");
-			$("[data-toggle='popover']").popover();
+			$("#mynewsModal_copy").popover();
 			$("#btn_show_news_content").click();
 			console.log("当前点击的编号:"+$(this).attr("id").split("_")[0]);
 			//填充新闻内容

@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +38,13 @@ public class NewsPageRestController {
 		System.out.println("获取新闻条数:"+newsDataList.size());
 		Gson gson = new Gson();
 		return gson.toJson(newsDataList);
+	}
+	
+	@RequestMapping("/news_view/del_news")
+	public String delNewsByUrl(@RequestParam String url) {
+		System.out.println("新闻删除控制, 接收到url="+url);
+		//从数据库中删除该条新闻
+		mongoTemplate.findAndRemove(new Query(Criteria.where("url").is(url)), NewsDocs.class);
+		return new Gson().toJson("");
 	}
 }
