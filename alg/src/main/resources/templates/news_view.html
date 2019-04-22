@@ -10,6 +10,7 @@
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 <title>新闻数据总览</title>
 </head>
 <body>
@@ -38,8 +39,29 @@
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
+	<!-- 点击查看新闻内容的模态框 -->
+	<button id="btn_show_news_content" style="display:none" data-toggle="modal" data-target="#newsModal"></button>
+	<div class="modal fade" id="newsModal" tabindex="-1" role="dialog" aria-labelledby="mynewsModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="mynewsModalLabel">新闻内容</h4>
+				</div>
+				<div class="modal-body">
+					<div id="modal_news_content" class="modal-body pre-scrollable">
+						<!-- 显示新闻内容 -->
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="mynewsModal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button id="mynewsModal_copy" type="button" class="btn btn-info" data-clipboard-target="#modal_news_content" title="内容已复制到剪切板!" data-container="#newsModal" data-toggle="popover" data-placement="bottom">复制内容</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- 显示新闻数据的表格 -->
-	<table class="table table-hover">
+	<table class="table table-hover col-sm-offset-1" style="width:80%">
 		<thead>
 			<tr>
 				<th>网址</th>
@@ -52,8 +74,8 @@
 		</tbody>
 	</table>
 	<!-- 分页按钮  -->
-	<div class="nav-box col-sm-offset-2">
-		<ul class="pagination" id="page_ind"></ul>
+	<div class="pagination-lg col-sm-offset-4">
+		<ul id="page_ind"></ul>
 	</div>
 	<!-- 页脚 -->
 	<footer class="footer">
@@ -64,10 +86,49 @@
 	$(document).ready(function(){
 		$.ajaxSetup({async:false});
 		$("#btn_show_modal").click();
+		var news_datas=new Array();
 		$.get("/news_view/get_news",function(data){
 			console.log("接收到新闻数据...");
+			news_datas=data;
+			setTimeout(function(){
+				$("#myModal_close").click();
+			},1000);
 		});
-		$("#myModal_close").click();
+		news_datas = $.parseJSON(news_datas);
+		//console.log("新闻数据的条数:"+news_datas.length+", 第一条新闻内容:"+JSON.stringify(news_datas[0]));
+		//每一页显示10条记录
+		//底部分页按钮配置参数
+		dataSource=new Array();
+		for(var i=0;i<news_datas.length;++i){
+			dataSource.push(i);
+		}
+		$("#page_ind").pagination({
+			dataSource:dataSource,
+			pageSize:10,
+			showPrevious:true,
+			showNext:true,
+			callback:function(data_ind_range){
+				console.log("当前页面范围: "+data_ind_range);
+				//清除表格中的内容
+				$("#newsdata_tbody").empty();
+				//动态填充表格中的单元格与数据
+				for(var i=0;i<data_ind_range.length;++i){
+					var data_ind = data_ind_range[i];
+					$("#newsdata_tbody").append("<tr><td><span class='text-primary'><a href='"+news_datas[data_ind]["url"]+"' target='_blank'>"+news_datas[data_ind]["url"]+"</a></span></td><td>"+news_datas[data_ind]["title"]+"</td><td>"+news_datas[data_ind]["releaseTime"]+"</td><td><button id='"+data_ind+"_view_news' type='button' class='btn btn-link'>查看</button></td></tr>");
+				}
+			}
+		});
+		
+		//查看新闻内容点击事件
+		$("body").on("click",".btn-link",function(){
+			var clipboard = new ClipboardJS(".btn-info");
+			$("[data-toggle='popover']").popover();
+			$("#btn_show_news_content").click();
+			console.log("当前点击的编号:"+$(this).attr("id").split("_")[0]);
+			//填充新闻内容
+			console.log(news_datas[$(this).attr("id").split("_")[0]]["content"]);
+			$("#modal_news_content").text(news_datas[$(this).attr("id").split("_")[0]]["content"]);
+		});
 	});
 </script>
 </html>
