@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import lc.alg.entity.SpiderConfigForm;
 import lc.alg.entity.SpiderConfigInfo;
 import lc.alg.entity.SpiderMissingInfo;
+import lc.alg.entity.SpiderRunInfo;
 import lc.alg.entity.User;
 
 /**
@@ -53,6 +54,10 @@ public class SpiderPageController {
 		mongoTemplate.save(spiderConfigInfo, "spider_config");
 		//删除missing_info 中的所有记录
 		mongoTemplate.dropCollection(SpiderMissingInfo.class);
+		//将当前任务添加到spiderrun_info集合中
+		SpiderRunInfo spiderRunInfo = new SpiderRunInfo();
+		spiderRunInfo.setTaskName(spiderConfigInfo.getTaskName());
+		mongoTemplate.save(spiderRunInfo);
 		return "new_spider";
 	}
 	

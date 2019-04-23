@@ -1,5 +1,6 @@
 package lc.alg.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,10 @@ public class SpiderRunInfo {
 	}
 	public SpiderRunInfo() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.taskName = new String();
+		this.memInfo = new ArrayList<>();
+		this.getCountInfo = new ArrayList<>();
+		this.runlog = new String();
 	}
 	public String getTaskName() {
 		return taskName;

@@ -137,9 +137,11 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 		SpiderConfigInfo spiderConfigInfo = mongoTemplate.findOne(query, SpiderConfigInfo.class);
 		if(spiderConfigInfo != null) {
 			//更新memInfo getCountInfo
+			System.out.println("in schedule supervise spider run.java , taskName is " + spiderConfigInfo.getTaskName());
 			String taskName = spiderConfigInfo.getTaskName();
 			query = new Query(Criteria.where("taskName").is(taskName));
 			SpiderRunInfo spiderRunInfo = mongoTemplate.findOne(query, SpiderRunInfo.class);
+			System.out.println("spiderRunInfo is "+spiderRunInfo);
 			Map<String,String> timeMemUse = new HashMap<>();
 			timeMemUse.put(dateStr, memUsageStr);
 			spiderRunInfo.getMemInfo().add(timeMemUse);	//添加当前时间点的内存占用信息

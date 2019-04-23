@@ -18,15 +18,6 @@
 		</div>
 	</div>
 	<input type="hidden" id="user_name_hidden" th:value="${user_name}">
-	<!-- 爬虫配置提交后的提示信息 -->
-	<div class="alert alert-success alert-dismissable" style="display:none">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		爬虫配置成功!
-	</div>
-	<div class="alert alert-danger alert-dismissable" style="display:none">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		爬虫配置提交错误!
-	</div>
 	<!-- 爬虫配置表单 -->
 	<form class="form-horizontal" role="form" id="spider_config_form">
 		<div class="form-group">
@@ -74,6 +65,11 @@
 							<button type="button" id="config_help" class="btn btn-info">配置帮助</button>
 						</div>
 					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="extern_xpath_test" class="btn btn-success">在线xpath测试</button>
+						</div>
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -92,6 +88,15 @@
 		</table>
 		<button type="submit" id="spider_config_submit_btn" class="btn btn-primary col-sm-offset-2" style="width:70%">启动爬虫程序</button>
 	</form>
+	<!-- 爬虫配置提交后的提示信息 -->
+	<div class="alert alert-success alert-dismissable" style="display:none">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		爬虫配置成功!
+	</div>
+	<div class="alert alert-danger alert-dismissable" style="display:none">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		爬虫配置提交错误!
+	</div>
 	<footer class="footer">
 		<div th:include="footer :: footer_panel"></div>
 	</footer>
@@ -136,6 +141,13 @@
 			e.initEvent("click",true,true);
 			link.dispatchEvent(e);
 		});
+		//外部链接，在线xpath 测试
+		$("#extern_xpath_test").on("click",function(){
+			var link = $("<a href='https://www.toolnb.com/tools-lang-zh-CN/xpath.html' target='_blank'>在线xpath测试</a>").get(0);
+			var e = document.createEvent("MouseEvents");
+			e.initEvent("click",true,true);
+			link.dispatchEvent(e);
+		});
 		//使用jquery 提交表单数据
 		$("#spider_config_submit_btn").on("click",function(event){
 			event.preventDefault();
@@ -161,12 +173,12 @@
 				timeout:5000,
 				success:function(data){
 					//将提示成功的提示框设置为显示
-					$(".alert-success").css("display","block");
+					$(".alert-success").css("display","");
 					$("#spider_config_submit_btn").prop("disabled",false);
 				},
 				error: function(err){
 					//将提示错误的提示框设置为显示
-					$(".alert-danger").css("display","block");
+					$(".alert-danger").css("display","");
 					$("#spider_config_submit_btn").prop("disabled",false);
 				}
 			});

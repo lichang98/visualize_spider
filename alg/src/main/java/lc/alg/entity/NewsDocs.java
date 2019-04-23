@@ -18,7 +18,6 @@ public class NewsDocs {
 	private String content;
 	public NewsDocs() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public NewsDocs(String title, String url, String releaseTime, String content) {
 		super();

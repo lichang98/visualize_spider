@@ -25,7 +25,7 @@ public class SpiderMissingInfo {
 	}
 	public SpiderMissingInfo() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.url=new String();
 	}
 	public String getUrl() {
 		return url;

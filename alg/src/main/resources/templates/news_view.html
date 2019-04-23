@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css" />
 <!-- 新 Bootstrap 核心 CSS 文件 -->
 <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.css" />
 <!-- jQuery文件 -->
 <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
 <title>新闻数据总览</title>
 </head>
@@ -74,8 +74,8 @@
 		</tbody>
 	</table>
 	<!-- 分页按钮  -->
-	<div class="pagination-lg col-sm-offset-4">
-		<ul id="page_ind"></ul>
+	<div class="col-sm-offset-4">
+		<ul id="page_ind" class="paginationjs-theme-blue paginationjs-big"></ul>
 	</div>
 	<!-- 页脚 -->
 	<footer class="footer">

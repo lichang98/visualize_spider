@@ -58,6 +58,11 @@
 							<button type="button" id="config_help" class="btn btn-info">配置帮助</button>
 						</div>
 					</td>
+					<td>
+						<div class="input-group">
+							<button type="button" id="extern_xpath_test" class="btn btn-success">在线xpath测试</button>
+						</div>
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -154,6 +159,13 @@
 			//打开配置帮助页面
 			var user_name="[[${user_name}]]";
 			var link=$("<a href='/spider_change_cfg/cfg_help?user_name="+user_name+"' target='_blank'>帮助页面</a>").get(0);
+			var e = document.createEvent("MouseEvents");
+			e.initEvent("click",true,true);
+			link.dispatchEvent(e);
+		});
+		//外部链接，在线xpath测试
+		$("#extern_xpath_test").on("click",function(){
+			var link=$("<a href='https://www.toolnb.com/tools-lang-zh-CN/xpath.html' target='_blank'>在线xpath测试</a>").get(0);
 			var e = document.createEvent("MouseEvents");
 			e.initEvent("click",true,true);
 			link.dispatchEvent(e);

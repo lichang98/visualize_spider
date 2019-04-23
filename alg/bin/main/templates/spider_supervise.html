@@ -32,7 +32,7 @@
 	<!-- 提示框 -->
 	<div class="alert alert-success alert-dismissable" id="operation_alert">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		任务删除成功!&nbsp;&nbsp;&nbsp;5秒后刷新页面......
+		操作成功!&nbsp;&nbsp;&nbsp;5秒后刷新页面......
 	</div>
 	<button id="btn_show_modal" style="display:none" data-toggle="modal" data-target="#myModal"></button>
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -510,7 +510,7 @@
 			for(var i=0;i<$(this).parent().children().length;i++){
 				console.log($(this).parent().children(":nth-child("+i+")").text().substr(0,4));
 				if($(this).parent().children(":nth-child("+i+")").text().substr(0,4) === "任务名称"){
-					$(this).parent().children(":nth-child("+i+")").attr("class","list-group-item col-sm-6");	
+					$(this).parent().children(":nth-child("+i+")").attr("class","list-group-item col-sm-3");	
 				}
 			}
 			$(this).attr("class","list-group-item active col-sm-3");
