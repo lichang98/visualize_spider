@@ -68,7 +68,7 @@ public class ScheduleSuperviseSpiderRun extends QuartzJobBean{
 
 	@Override
 	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		System.out.println("定时任务.................");
+		System.out.println(new Date().toString()+"定时任务.................");
 		//查询当前是否有running 状态的爬虫
 		if(mongoTemplate.findOne(new Query(Criteria.where("curStatus").is("running")), SpiderConfigInfo.class) == null) {
 			System.out.println("当前没有running 状态的爬虫程序");

@@ -60,6 +60,28 @@
 			</div>
 		</div>
 	</div>
+	<!-- 文件导出模态框 -->
+	<button id="btn_dump_news" style="display:none" data-toggle="modal" data-target="#dumpModal"></button>
+	<div class="modal fade" id="dumpModal" tabindex="-1" role="dialog" aria-labelledby="dumpNewsModalLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="dumpNewsModalLabel">文件导出中.........</h4>
+				</div>
+				<div class="modal-footer">
+					<button id="dumpModal_close" type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 文件导出目录提示 -->
+	<div id="dump_news_tip" class="alert alert-success alert-dismissable">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		<span id="dump_news_info"></span>
+	</div>
+	<!-- 新闻文件导出按钮 -->
+	<button id="file_dump" type="button" class="col-sm-offset-10 btn btn-info">文件导出</button>
 	<!-- 显示新闻数据的表格 -->
 	<table class="table table-hover col-sm-offset-1" style="width:80%">
 		<thead>
@@ -86,6 +108,7 @@
 	$(document).ready(function(){
 		$.ajaxSetup({async:false});
 		$("#btn_show_modal").click();
+		$("#dump_news_tip").hide();
 		var news_datas=new Array();
 		$.get("/news_view/get_news",function(data){
 			console.log("接收到新闻数据...");
@@ -121,6 +144,24 @@
 				}
 				$(".btn-danger").popover();
 			}
+		});
+		
+		//文件导出
+		$("#file_dump").on("click",function(){
+			$("#btn_dump_news").click();
+			console.log("文件导出点击");
+			setTimeout(function(){
+				var getInfo=null;
+				$.post("/news_view/dump_files",function(data){
+					console.log(data);
+					getInfo = data;
+				});
+				setTimeout(function(){
+					$("#dumpModal_close").click();
+					$("#dump_news_info").text(getInfo);
+					$("#dump_news_tip").show();
+				},1000);
+			},1000);
 		});
 		
 		//新闻删除按钮点击事件

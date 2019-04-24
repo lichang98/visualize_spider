@@ -57,7 +57,37 @@
 				<td>next_page</td>
 				<td>否</td>
 				<td>//a[@class="page-next"]/@href</td>
-				<td>下一页的链接</td>
+				<td>下一页的链接<span class="text-danger">如果页面没有下一页的链接,请不要添加该项</span></td>
+			</tr>
+			<tr>
+				<td>page_link_pattern</td>
+				<td>否</td>
+				<td>news/list-1.html?page=1</td>
+				<td>下一页链接模式<span class="text-danger">该参数不可与next_page同时添加</span></td>
+			</tr>
+			<tr>
+				<td>page_start</td>
+				<td>否</td>
+				<td>1</td>
+				<td>匹配模式的起始编号，例如上例中参数page起始为1<p class="text-danger">该参数需要与page_link_pattern同时配置</p></td>
+			</tr>
+			<tr>
+				<td>page_end</td>
+				<td>否</td>
+				<td>1760</td>
+				<td>匹配模式的结束编号，例如上例中参数page的最大编号为1760<span class="text-danger">该参数需要与page_link_pattern同时配置</span></td>
+			</tr>
+			<tr>
+				<td>replace_start</td>
+				<td>否</td>
+				<td>22</td>
+				<td>模式中被替换的部分的起始编号(0开始)<span class="text-danger">该参数需要与page_link_pattern同时配置</span></td>
+			</tr>
+			<tr>
+				<td>replace_end</td>
+				<td>否</td>
+				<td>-1</td>
+				<td>模式中被替换的部分的结束编号的下一个,如果替换到最后,设置为-1(例如news/list.html?page=1&time=19, 该参数置为21)<span class="text-danger">该参数需要与page_link_pattern同时配置</span></td>
 			</tr>
 			<tr>
 				<td>title</td>
