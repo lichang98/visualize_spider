@@ -110,42 +110,45 @@
 		$("#btn_show_modal").click();
 		$("#dump_news_tip").hide();
 		var news_datas=new Array();
-		$.get("/news_view/get_news",function(data){
-			console.log("接收到新闻数据...");
-			news_datas=data;
-			setTimeout(function(){
-				$("#myModal_close").click();
-			},1000);
-		});
-		news_datas = $.parseJSON(news_datas);
-		//console.log("新闻数据的条数:"+news_datas.length+", 第一条新闻内容:"+JSON.stringify(news_datas[0]));
-		//每一页显示10条记录
-		//底部分页按钮配置参数
-		dataSource=new Array();
-		for(var i=0;i<news_datas.length;++i){
-			dataSource.push(i);
-		}
-		$("#page_ind").pagination({
-			dataSource:dataSource,
-			pageSize:10,
-			showPrevious:true,
-			showNext:true,
-			callback:function(data_ind_range){
-				console.log("当前页面范围: "+data_ind_range);
-				//清除表格中的内容
-				$("#newsdata_tbody").empty();
-				//动态填充表格中的单元格与数据
-				for(var i=0;i<data_ind_range.length;++i){
-					var data_ind = data_ind_range[i];
-					$("#newsdata_tbody").append("<tr><td><span class='text-primary'><a href='"+news_datas[data_ind]["url"]+"' target='_blank'>"+news_datas[data_ind]["url"]+
-							"</a></span></td><td>"+news_datas[data_ind]["title"]+"</td><td>"+news_datas[data_ind]["releaseTime"]+
-							"</td><td><button id='"+data_ind+"_view_news' type='button' class='btn btn-link'>查看</button><input style='visibility:hidden;width:5px'>"
-								+"<button title='删除成功! 3秒后自动刷新页面' data-container='#newsdata_tbody' data-toggle='popover' data-placement='right' class='btn btn-danger' id='"+news_datas[data_ind]["url"]+"_del_news'>删除</button></td></tr>");
+		setTimeout(function(){
+			$.get("/news_view/get_news",function(data){
+				console.log("接收到新闻数据...");
+				news_datas=data;
+				setTimeout(function(){
+					$("#myModal_close").click();
+				},1000);
+				news_datas = $.parseJSON(news_datas);
+				//console.log("新闻数据的条数:"+news_datas.length+", 第一条新闻内容:"+JSON.stringify(news_datas[0]));
+				//每一页显示10条记录
+				//底部分页按钮配置参数
+				dataSource=new Array();
+				for(var i=0;i<news_datas.length;++i){
+					dataSource.push(i);
 				}
-				$(".btn-danger").popover();
-			}
-		});
-		
+				
+				$("#page_ind").pagination({
+					dataSource:dataSource,
+					pageSize:10,
+					showPrevious:true,
+					showNext:true,
+					callback:function(data_ind_range){
+						console.log("当前页面范围: "+data_ind_range);
+						//清除表格中的内容
+						$("#newsdata_tbody").empty();
+						//动态填充表格中的单元格与数据
+						for(var i=0;i<data_ind_range.length;++i){
+							var data_ind = data_ind_range[i];
+							$("#newsdata_tbody").append("<tr><td><span class='text-primary'><a href='"+news_datas[data_ind]["url"]+"' target='_blank'>"+news_datas[data_ind]["url"]+
+									"</a></span></td><td>"+news_datas[data_ind]["title"]+"</td><td>"+news_datas[data_ind]["releaseTime"]+
+									"</td><td><button id='"+data_ind+"_view_news' type='button' class='btn btn-link'>查看</button><input style='visibility:hidden;width:5px'>"
+										+"<button title='删除成功! 3秒后自动刷新页面' data-container='#newsdata_tbody' data-toggle='popover' data-placement='right' class='btn btn-danger' id='"+news_datas[data_ind]["url"]+"_del_news'>删除</button></td></tr>");
+						}
+						$(".btn-danger").popover();
+					}
+				});
+			});
+		},1000);
+				
 		//文件导出
 		$("#file_dump").on("click",function(){
 			$("#btn_dump_news").click();
