@@ -30,7 +30,7 @@
 	</ul>
 	<!-- tab 标签对应的页面 -->
 	<div id="tab_content" class="tab-content col-sm-offset-1" style="width:90%">
-		<div class="tab-pane fade in active" id="time_distribute" style="width:80%;margin:20px;height:400px;top:5%;left:10%;bottom:10%;border:3px solid #ADD8E6">
+		<div class="tab-pane fade in active" id="time_distribute" style="width:90%;height:400px;border:3px solid #ADD8E6">
 			<p>时间分布图</p>
 		</div>
 		<div class="tab-pane fade" id="word_cloud">
@@ -66,171 +66,58 @@
 			}
 			var time_distribute_chart = echarts.init(document.getElementById("time_distribute"));
 			var option={
-					title:{
-						text:"食品安全事件时间分布图",
-						textStyle:{
-							color:"#fff"
+				title:{
+					text:"食品安全事件时间分布图",
+					left:50
+				},
+				toolbox:{
+					feature:{
+						dataZoom:{
+							yAxisIndex:false,
 						},
-						padding:[0,0,100,100]
+						saveAsImage:{
+							pixelRatio:2,
+						},
 					},
-					legend:{
-						type:"plain",
-						top:"1%",
-						selected:{
-							"频次":true
-						},
-						textStyle:{
-							color:"#fff"
-						},
-						tooltip:{
-							show:true,
-							color:"red"
-						},
-						data:[{
-							name:"频次",
-							icon:"circle",
-							textStyle:{
-								color:"#fff"
-							}
-						}]						
+				},
+				tooltip:{
+					trigger:"axis",
+					axisPointer:{
+						type:"shadow"
 					},
-					tooltip:{
-						show:true,
-						trigger:"item",
-						axisPointer:{
-							type:"shadow",
-							axis:"auto"
-						},
-						padding:5,
-						textStyle:{
-							color:"#fff"
-						}
+				},
+				grid:{
+					bottom:90
+				},
+				dataZoom:[{
+					type:"inside"
+				},{
+					type:"slider"
+				}],
+				xAxis:{
+					data:tm_list,
+					silent:false,
+					splitLine:{
+						show:false
 					},
-					grid:{
-						show:false,
-						top:80,
-						containLabel:false,
-						tooltip:{
-							show:true,
-							trigger:"item",
-							textStyle:{
-								color:"#666"
-							}
-						}
-					},
-					xAxis:{
-						show:true,
-						position:"bottom",
-						offset:0,
-						type:"category",
-						name:"时间",
-						nameLocation:"end",
-						nameTextStyle:{
-							color:"#fff",
-							padding:[5,0,0,-5]
-						},
-						nameGap:15,
-						axisLine:{
-							show:true,
-							symbol:['none','arrow'],
-							symbolSize:[8,8],
-							symbolOffset:[0,7],
-							lineStyle:{
-								color:"#fff",
-								width:1,
-								type:"solid",
-							},
-						},
-						axisTick:{
-							show:true,
-							inside:true,
-							length:3,
-							lineStyle:{
-								width:1,
-								type:"solid"
-							}
-						},
-						axisLabel:{
-							show:true,
-							inside:false,
-							rotate:0,
-							margin:5
-						},
-						splitLine:{
-							show:false,
-						},
-						splitArea:{
-							show:false
-						},
-						data:tm_list
-					},
-					// y轴
-					yAxis:{
-						show:true,
-						position:"left",
-						offset:0,
-						type:"value",
-						name:"频次",
-						nameLocation:"end",
-						nameTextStyle:{
-							color:"#fff",
-							padding:[5,0,0,5]
-						},
-						nameGap:15,
-						axisLine:{
-							show:true,
-							symbol:["none","arrow"],
-							symbolSize:[8,8],
-							symbolOffset:[0,7],
-							lineStyle:{
-								color:"#fff",
-								width:1,
-								type:"solid",
-							}
-						},
-						axisTick:{
-							show:true,
-							inside:true,
-							length:3,
-							lineStyle:{
-								width:1,
-								type:"solid"
-							}
-						},
-						axLabel:{
-							show:true,
-							lineStyle:{
-								color:"#666",
-								width:1,
-								type:"dashed"
-							}
-						},
-						splitArea:{
-							show:false
-						}
-					},
-					// 数据
-					series:[{
-						name:"频次",
-						type:"bar",
-						legendHoverLink:true,
-						label:{
-							show:false,
-							position:"insideTop",
-							rotate:0,
-							color:"#eee"
-						},
-						itemStyle:{
-							color:"blue",
-							barBorderradius:[18,18,0,0]
-						},
-						barWidth:"20",
-						barCategoryGap:"20%",
-						data:freq_list
-					}]
+					splitArea:{
+						show:true
+					}
+				},
+				yAxis:{
+					splitArea:{
+						show:false
+					}
+				},
+				series:[{
+					type:"bar",
+					data:freq_list,
+					large:true
+				}]
 			};//option
 			time_distribute_chart.setOption(option);
 		});//link_time_distribute click
+		$("#link_time_distribute").click();
 	});//document.ready()
 </script>
 </html>
