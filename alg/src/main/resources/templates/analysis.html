@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- 新 Bootstrap 核心 CSS 文件 -->
+<link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<!-- jQuery文件 -->
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- 引入 ECharts 文件 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts.min.js"></script>
+<title>新闻分析结果展示</title>
+</head>
+<body>
+	<div th:include="header :: headpanel"></div>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h2 class="text-primary">新闻分析结果展示</h2>
+		</div>
+	</div>
+	<!-- 各项分析tab页 -->
+	<ul id="analysis_tab" class="nav nav-tabs col-sm-offset-1">
+		<li class="active" id="link_time_distribute">
+			<a href="#time_distribute" data-toggle="tab">食品安全时间分布图</a>
+		</li>
+		<li>
+			<a href="#word_cloud" data-toggle="tab">词云</a>
+		</li>
+	</ul>
+	<!-- tab 标签对应的页面 -->
+	<div id="tab_content" class="tab-content col-sm-offset-1" style="width:90%">
+		<div class="tab-pane fade in active" id="time_distribute" style="width:80%;margin:20px;height:400px;top:5%;left:10%;bottom:10%;border:3px solid #ADD8E6">
+			<p>时间分布图</p>
+		</div>
+		<div class="tab-pane fade" id="word_cloud">
+			<p>词云</p>
+		</div>
+	</div>
+	
+	<footer class="footer">
+		<div th:include="footer :: footer_panel"></div>
+	</footer>
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$.ajaxSetup({
+			async:false
+		});
+		
+		$("#link_time_distribute").click(function(){
+			//获取时间分布数据
+			var time_list=new Array() // even时间以及对应的频次odd
+			$.get("/analysis_news/time_distribute",function(data){
+				console.log("获取时间分布数据: " + JSON.stringify(data));
+				time_list=data;
+			},"json");
+			var tm_list=new Array();
+			var freq_list=new Array();
+			for(var i=0;i<time_list.length;++i){
+				if(i % 2 == 0){
+					tm_list.push(time_list[i]);
+				}else{
+					freq_list.push(time_list[i]);
+				}
+			}
+			var time_distribute_chart = echarts.init(document.getElementById("time_distribute"));
+			var option={
+					title:{
+						text:"食品安全事件时间分布图",
+						textStyle:{
+							color:"#fff"
+						},
+						padding:[0,0,100,100]
+					},
+					legend:{
+						type:"plain",
+						top:"1%",
+						selected:{
+							"频次":true
+						},
+						textStyle:{
+							color:"#fff"
+						},
+						tooltip:{
+							show:true,
+							color:"red"
+						},
+						data:[{
+							name:"频次",
+							icon:"circle",
+							textStyle:{
+								color:"#fff"
+							}
+						}]						
+					},
+					tooltip:{
+						show:true,
+						trigger:"item",
+						axisPointer:{
+							type:"shadow",
+							axis:"auto"
+						},
+						padding:5,
+						textStyle:{
+							color:"#fff"
+						}
+					},
+					grid:{
+						show:false,
+						top:80,
+						containLabel:false,
+						tooltip:{
+							show:true,
+							trigger:"item",
+							textStyle:{
+								color:"#666"
+							}
+						}
+					},
+					xAxis:{
+						show:true,
+						position:"bottom",
+						offset:0,
+						type:"category",
+						name:"时间",
+						nameLocation:"end",
+						nameTextStyle:{
+							color:"#fff",
+							padding:[5,0,0,-5]
+						},
+						nameGap:15,
+						axisLine:{
+							show:true,
+							symbol:['none','arrow'],
+							symbolSize:[8,8],
+							symbolOffset:[0,7],
+							lineStyle:{
+								color:"#fff",
+								width:1,
+								type:"solid",
+							},
+						},
+						axisTick:{
+							show:true,
+							inside:true,
+							length:3,
+							lineStyle:{
+								width:1,
+								type:"solid"
+							}
+						},
+						axisLabel:{
+							show:true,
+							inside:false,
+							rotate:0,
+							margin:5
+						},
+						splitLine:{
+							show:false,
+						},
+						splitArea:{
+							show:false
+						},
+						data:tm_list
+					},
+					// y轴
+					yAxis:{
+						show:true,
+						position:"left",
+						offset:0,
+						type:"value",
+						name:"频次",
+						nameLocation:"end",
+						nameTextStyle:{
+							color:"#fff",
+							padding:[5,0,0,5]
+						},
+						nameGap:15,
+						axisLine:{
+							show:true,
+							symbol:["none","arrow"],
+							symbolSize:[8,8],
+							symbolOffset:[0,7],
+							lineStyle:{
+								color:"#fff",
+								width:1,
+								type:"solid",
+							}
+						},
+						axisTick:{
+							show:true,
+							inside:true,
+							length:3,
+							lineStyle:{
+								width:1,
+								type:"solid"
+							}
+						},
+						axLabel:{
+							show:true,
+							lineStyle:{
+								color:"#666",
+								width:1,
+								type:"dashed"
+							}
+						},
+						splitArea:{
+							show:false
+						}
+					},
+					// 数据
+					series:[{
+						name:"频次",
+						type:"bar",
+						legendHoverLink:true,
+						label:{
+							show:false,
+							position:"insideTop",
+							rotate:0,
+							color:"#eee"
+						},
+						itemStyle:{
+							color:"blue",
+							barBorderradius:[18,18,0,0]
+						},
+						barWidth:"20",
+						barCategoryGap:"20%",
+						data:freq_list
+					}]
+			};//option
+			time_distribute_chart.setOption(option);
+		});//link_time_distribute click
+	});//document.ready()
+</script>
+</html>

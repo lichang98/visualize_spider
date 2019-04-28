@@ -33,15 +33,7 @@
 						</ul>
 					</li>
 					<li><a th:href="@{'/news_view?user_name='+${user_name}}">爬取新闻总览</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							分析结果展示<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">词云展示</a></li>
-							<li><a href="#">新闻分析结果展示</a></li>
-						</ul>
-					</li>
+					<li><a th:href="@{'/analysis_news?user_name='+${user_name}}">分析结果展示</a></li>
 				</ul>
 			</div>
 		</div>
