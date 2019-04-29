@@ -30,6 +30,12 @@ class NewsSpider(scrapy.Spider):
     xp_release_time=[]
     xp_content=[]
     xp_nextpage=[]
+    # 处理类似于http://foodsafeguard.com/news/list-1.html?page=1   没有下一页链接的情况
+    xp_nextpage_pattern=[] # 对于没有下一页链接的页面，使用某种替换规则获得其他页面，例如参数中?page=1
+    xp_nextpage_pattern_start=-1 # 参数中匹配编号的起始
+    xp_nextpage_pattern_end=-1  
+    xp_nextpage_pattern_rep_start=0  # 匹配规则替换起始位置，例如www.baidu.com?page=1, 值为19
+    xp_nextpage_pattern_rep_end=-1   # 匹配规则替换的结束位置，not include, -1 表示到最后,# 匹配编号的结束,例如www.baidu.com?page=1&time=190301, 值为20
     for item in running_spider["attributeParser"]:
         print("in news_spider.py: running_spider item: " + str(item));
         item = dict(item)
@@ -50,6 +56,17 @@ class NewsSpider(scrapy.Spider):
                 xp_content.append(val)
             elif key == 'next_page':     # 获取下一个新闻列表的链接的xpath 解析规则
                 xp_nextpage.append(val)
+            elif key == 'page_link_pattern':
+                xp_nextpage_pattern.append(str(val))
+            elif key == "page_start":
+                xp_nextpage_pattern_start = int(val)
+            elif key == "page_end":
+                xp_nextpage_pattern_end=int(val)
+            elif key == "replace_start":
+                xp_nextpage_pattern_rep_start=int(val)
+            elif key == "replace_end":
+                xp_nextpage_pattern_rep_end =int(val)
+    cur_getpage_ind = xp_nextpage_pattern_start+1   # 记录当前处理的页面编号
     allowed_domains=org_domain_list
     start_urls=[start_url] # 起始页面链接
     pass
@@ -74,18 +91,22 @@ class NewsSpider(scrapy.Spider):
             xp_next_page: 用于获取下一个新闻列表页面
         """
         pagelink_list = response.xpath(self.xp_page_url_list[0]).extract()
+        for i in range(len(pagelink_list)):
+            if pagelink_list[i][0] == '/':
+                pagelink_list[i] = pagelink_list[i][1:]
         # 给每个页面链接加上网站域名，例如https://search.cctv.com/+"?...."
         if self.web_domain_list[0][-1] != '/':
             self.web_domain_list[0] += '/'
+        print("网站域名地址为:" + self.web_domain_list[0])
         # 对网页链接的预处理，例如a href="xxxxtargetpage=http://xxx"的情况
         for i in range(len(pagelink_list)):
-            if pagelink_list[i].index("http") == -1:
+            if pagelink_list[i].find("http") == -1:
                 pagelink_list[i] = self.web_domain_list[0]+pagelink_list[i]
             else:
-                if pagelink_list[i].index("html") !=-1:
+                if pagelink_list[i].find("html") !=-1:
                     pagelink_list[i]=pagelink_list[i][pagelink_list[i].
                                   index("http"):pagelink_list[i].index('html')+4]
-                elif pagelink_list[i].index('htm') !=-1:
+                elif pagelink_list[i].find('htm') !=-1:
                     pagelink_list[i]=pagelink_list[i][pagelink_list[i].
                                   index('http'):pagelink_list[i].index('htm')+3]
                 else:
@@ -101,11 +122,26 @@ class NewsSpider(scrapy.Spider):
         for i in range(len(pagelink_list)):
             yield scrapy.Request(pagelink_list[i],meta={'url':pagelink_list[i]},
                                  callback=self.page_parse,errback=self.errback)
-        next_pagelist_link = response.xpath(self.xp_nextpage[0]).extract()[0]
-        print("下一个页面列表的链接:"+self.web_domain_list[0]+next_pagelist_link);
-        if next_pagelist_link:
-            yield scrapy.Request(self.web_domain_list[0] + next_pagelist_link,
-                                 callback=self.parse,errback=self.errback)
+        if self.xp_nextpage:  # 如果页面有下一页的链接
+            next_pagelist_link = response.xpath(self.xp_nextpage[0]).extract()[0]
+            print("下一个页面列表的链接:"+self.web_domain_list[0]+next_pagelist_link)
+            if next_pagelist_link:
+                yield scrapy.Request(self.web_domain_list[0] + next_pagelist_link,
+                                     callback=self.parse,errback=self.errback)
+        elif self.xp_nextpage_pattern_start !=-1:
+            # 处理页面没有下一页链接，有固定模式的情况
+            if self.cur_getpage_ind <= self.xp_nextpage_pattern_end:
+                print("当前处理的页面编号:"+str(self.cur_getpage_ind))
+                next_page_url = str(self.xp_nextpage_pattern[0] \
+                    [:self.xp_nextpage_pattern_rep_start])+str(self.cur_getpage_ind)
+                self.cur_getpage_ind +=1
+                next_page_url += str(self.xp_nextpage_pattern[0] \
+                    [self.xp_nextpage_pattern_rep_end:]) if \
+                        self.xp_nextpage_pattern_rep_end !=-1 else ""
+                # 加上网站域名前缀, 并请求
+                next_page_url = self.web_domain_list[0]+next_page_url
+                print("下一页的链接为: "+next_page_url)
+                yield scrapy.Request(next_page_url,callback=self.parse,errback=self.errback)
         return None
     
     

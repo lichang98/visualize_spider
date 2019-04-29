@@ -47,14 +47,14 @@
 		$.ajaxSetup({
 			async:false
 		});
+		var time_list=new Array() // even时间以及对应的频次odd
+		$.get("/analysis_news/time_distribute",function(data){
+			console.log("获取时间分布数据: " + JSON.stringify(data));
+			time_list=data;
+		},"json");
 		
 		$("#link_time_distribute").click(function(){
 			//获取时间分布数据
-			var time_list=new Array() // even时间以及对应的频次odd
-			$.get("/analysis_news/time_distribute",function(data){
-				console.log("获取时间分布数据: " + JSON.stringify(data));
-				time_list=data;
-			},"json");
 			var tm_list=new Array();
 			var freq_list=new Array();
 			for(var i=0;i<time_list.length;++i){
@@ -98,7 +98,7 @@
 					data:tm_list,
 					silent:false,
 					splitLine:{
-						show:false
+						show:true
 					},
 					splitArea:{
 						show:true
@@ -112,10 +112,14 @@
 				series:[{
 					type:"bar",
 					data:freq_list,
-					large:true
+					large:true,
+					barCategoryGap:"80%"
 				}]
 			};//option
-			time_distribute_chart.setOption(option);
+			time_distribute_chart.setOption(option,true);
+			setTimeout(function(){
+				time_distribute_chart.resize();
+			},300);
 		});//link_time_distribute click
 		$("#link_time_distribute").click();
 	});//document.ready()
