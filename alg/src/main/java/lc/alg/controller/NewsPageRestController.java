@@ -40,6 +40,7 @@ public class NewsPageRestController {
 	private MongoTemplate mongoTemplate;
 	
 	private static ObjectMapper objectMapper = new ObjectMapper();
+	private static Gson gson = new Gson();
 	
 	/**
 	 * 获取新闻数据
@@ -51,9 +52,33 @@ public class NewsPageRestController {
 		System.out.println("新闻数据获取控制");
 		List<NewsDocs> newsDataList = mongoTemplate.findAll(NewsDocs.class);	
 		System.out.println("获取新闻条数:"+newsDataList.size());
+		//清空列表中每个新闻的内容,减少数据传输
+		for(int i=0;i<newsDataList.size();++i) {
+			newsDataList.get(i).setContent(null);
+			newsDataList.get(i).setContent("");
+		}
+		System.out.println("新闻数据发送中....");
 //		Gson gson = new Gson();
 //		return gson.toJson(newsDataList);
 		return objectMapper.writeValueAsString(newsDataList);
+	}
+	
+	/**
+	 * 根据网址获取对应的新闻正文内容
+	 * @param urlString
+	 * @return
+	 */
+	@RequestMapping("/news_view/get_news_content")
+	public String getNewsContent(@RequestParam String urlString) {
+		System.out.println("新闻正文内容获取控制.........");
+		System.out.println("当前请求的网址为："+urlString);
+		Query query = new Query(Criteria.where("url").is(urlString));
+		NewsDocs newsDocs = null;
+		if ((newsDocs = mongoTemplate.findOne(query, NewsDocs.class)) != null) {
+			return gson.toJson(newsDocs.getContent());
+		} else {
+			return gson.toJson("");
+		}
 	}
 	
 	@RequestMapping("/news_view/del_news")
@@ -61,7 +86,7 @@ public class NewsPageRestController {
 		System.out.println("新闻删除控制, 接收到url="+url);
 		//从数据库中删除该条新闻
 		mongoTemplate.findAndRemove(new Query(Criteria.where("url").is(url)), NewsDocs.class);
-		return new Gson().toJson("");
+		return gson.toJson("");
 	}
 	
 	/**

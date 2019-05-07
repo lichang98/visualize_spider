@@ -204,8 +204,15 @@
 			$("#btn_show_news_content").click();
 			console.log("当前点击的编号:"+$(this).attr("id").split("_")[0]);
 			//填充新闻内容
-			console.log(news_datas[$(this).attr("id").split("_")[0]]["content"]);
-			$("#modal_news_content").text(news_datas[$(this).attr("id").split("_")[0]]["content"]);
+//			console.log(news_datas[$(this).attr("id").split("_")[0]]["content"]);
+// 			$("#modal_news_content").text(news_datas[$(this).attr("id").split("_")[0]]["content"]);
+			//新闻内容改为浏览时获取
+			$.post("/news_view/get_news_content",{"urlString":news_datas[$(this).attr("id").split("_")[0]]["url"]},
+					function(data){
+				//获取新闻内容
+				//console.log("获取的新闻内容为:"+data);
+				$("#modal_news_content").text(data);
+			});
 		});
 	});
 </script>
