@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -25,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import lc.alg.entity.NewsDocs;
@@ -39,17 +39,21 @@ public class NewsPageRestController {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
+	private static ObjectMapper objectMapper = new ObjectMapper();
+	
 	/**
 	 * 获取新闻数据
 	 * @return
+	 * @throws JsonProcessingException 
 	 */
 	@RequestMapping("/news_view/get_news")
-	public String getNews() {
+	public String getNews() throws JsonProcessingException {
 		System.out.println("新闻数据获取控制");
 		List<NewsDocs> newsDataList = mongoTemplate.findAll(NewsDocs.class);	
 		System.out.println("获取新闻条数:"+newsDataList.size());
-		Gson gson = new Gson();
-		return gson.toJson(newsDataList);
+//		Gson gson = new Gson();
+//		return gson.toJson(newsDataList);
+		return objectMapper.writeValueAsString(newsDataList);
 	}
 	
 	@RequestMapping("/news_view/del_news")
