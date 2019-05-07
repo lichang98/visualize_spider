@@ -7,7 +7,12 @@
 <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 <!-- jQuery文件 -->
 <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script
+  src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+  integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+  crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/paginationjs/2.1.4/pagination.js"></script>
+<script th:src="@{/js/jquery.fileDownload.js}"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
@@ -151,20 +156,32 @@
 				
 		//文件导出
 		$("#file_dump").on("click",function(){
-			$("#btn_dump_news").click();
-			console.log("文件导出点击");
-			setTimeout(function(){
-				var getInfo=null;
-				$.post("/news_view/dump_files",function(data){
-					console.log(data);
-					getInfo = data;
-				});
-				setTimeout(function(){
+// 			$("#btn_dump_news").click();
+// 			console.log("文件导出点击");
+// 			setTimeout(function(){
+// 				var getInfo=null;
+// 				$.post("/news_view/dump_files",function(data){
+// 					console.log(data);
+// 					getInfo = data;
+// 				});
+// 				setTimeout(function(){
+// 					$("#dumpModal_close").click();
+// 					$("#dump_news_info").text(getInfo);
+// 					$("#dump_news_tip").show();
+// 				},1000);
+// 			},1000);
+			$.fileDownload("/news_view/download",{
+				httpMethod:'GET',
+				data:"",
+				failMessageHtml:"文件下载失败!",
+				prepareCallback:function(){
+					$("#btn_dump_news").click();
+				},
+				successCallback:function(){
 					$("#dumpModal_close").click();
-					$("#dump_news_info").text(getInfo);
-					$("#dump_news_tip").show();
-				},1000);
-			},1000);
+				}
+			});
+			
 		});
 		
 		//新闻删除按钮点击事件

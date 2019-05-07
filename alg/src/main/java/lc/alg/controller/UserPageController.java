@@ -87,6 +87,7 @@ public class UserPageController {
 			mongoTemplate.updateFirst(query, update, User.class);
 			model.addAttribute("userform_check","yes");
 		}
+		model.addAttribute("user_name",user.getName());
 		return "user";
 	}
 }

@@ -5,12 +5,18 @@ package lc.alg.controller;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -75,5 +81,21 @@ public class NewsPageRestController {
 		System.out.println("文件导出控制，新闻文本导出完毕.....");
 		//向页面返回结果
 		return new Gson().toJson("文件保存路径:"+Paths.get(System.getProperty("user.dir"),"src","main","resources","static","text").toString());
+	}
+	
+	@RequestMapping("/news_view/download")
+	public String downloadNews(HttpServletRequest servletRequest,HttpServletResponse response) throws IOException {
+		System.out.println("新闻文件下载处理.........");
+		response.setCharacterEncoding(servletRequest.getCharacterEncoding());
+		response.setContentType("application/octet-stream");
+		FileInputStream fileInputStream=null;
+		File file=new File("G:\\file_test.txt");
+		fileInputStream=new FileInputStream(file);
+		response.setHeader("Content-Disposition", "attachment; filename="+file.getName());
+		response.addHeader("Set-Cookie", "fileDownload=true;path=/");
+		IOUtils.copy(fileInputStream, response.getOutputStream());
+		response.flushBuffer();
+		fileInputStream.close();
+		return "";
 	}
 }
