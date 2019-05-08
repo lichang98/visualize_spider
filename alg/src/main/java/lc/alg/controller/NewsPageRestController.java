@@ -3,11 +3,15 @@
  */
 package lc.alg.controller;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -28,6 +32,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import lc.alg.entity.NewsDocs;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 
 /**
  * @author 李畅
@@ -113,18 +121,55 @@ public class NewsPageRestController {
 	}
 	
 	@RequestMapping("/news_view/download")
-	public String downloadNews(HttpServletRequest servletRequest,HttpServletResponse response) throws IOException {
+	public String downloadNews(HttpServletRequest servletRequest,HttpServletResponse response) throws IOException, InterruptedException, ZipException {
 		System.out.println("新闻文件下载处理.........");
+		//文件导出到resources\static\text目录下
+		List<NewsDocs> newsDocsList = mongoTemplate.findAll(NewsDocs.class);
+		for(int i=0;i<newsDocsList.size();++i) {
+			File file = new File(Paths.get(System.getProperty("user.dir"), "src","main","resources","static","text",i+".txt").toString());
+			if(file.exists()) {
+				file.delete();
+			}
+			file.createNewFile();
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+			bufferedWriter.write(newsDocsList.get(i).getContent());
+			bufferedWriter.flush();
+			bufferedWriter.close();
+		}
+		System.out.println("文件导出控制，新闻文本导出完毕......");
+		ZipParameters zipParameters = new ZipParameters();
+		zipParameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+		zipParameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+		File file = new File(Paths.get(System.getProperty("user.dir"),"src","main","resources","static","news_text.zip").toString());
+		if(file.exists()) {
+			file.delete();
+		}
+		ZipFile zipFile = new ZipFile(Paths.get(System.getProperty("user.dir"),"src","main","resources","static","news_text.zip").toString());
+		zipFile.addFolder(Paths.get(System.getProperty("user.dir"),"src","main","resources","static","text").toString(), zipParameters);
+		System.out.println("新闻文本压缩完毕..................");
+		//传输压缩文件
 		response.setCharacterEncoding(servletRequest.getCharacterEncoding());
 		response.setContentType("application/octet-stream");
 		FileInputStream fileInputStream=null;
-		File file=new File("G:\\file_test.txt");
+		file=new File(Paths.get(System.getProperty("user.dir"),"src","main","resources","static","news_text.zip").toString());
 		fileInputStream=new FileInputStream(file);
+		System.out.println("文件输出流转换...............");
 		response.setHeader("Content-Disposition", "attachment; filename="+file.getName());
-		response.addHeader("Set-Cookie", "fileDownload=true;path=/");
+		response.addHeader("Set-Cookie", "fileDownload=true; path=/");
 		IOUtils.copy(fileInputStream, response.getOutputStream());
 		response.flushBuffer();
 		fileInputStream.close();
+		System.out.println("文件处理结束..........");
+//		response.setCharacterEncoding(servletRequest.getCharacterEncoding());
+//		response.setContentType("application/octet-stream");
+//		FileInputStream fileInputStream=null;
+//		File file=new File("G:\\file_test.txt");
+//		fileInputStream=new FileInputStream(file);
+//		response.setHeader("Content-Disposition", "attachment; filename="+file.getName());
+//		response.addHeader("Set-Cookie", "fileDownload=true;path=/");
+//		IOUtils.copy(fileInputStream, response.getOutputStream());
+//		response.flushBuffer();
+//		fileInputStream.close();
 		return "";
 	}
 }
